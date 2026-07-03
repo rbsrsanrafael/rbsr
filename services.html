@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Services - Rural Bank of San Rafael</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+    html {
+    scroll-behavior: smooth;
+}
+body { font-family: 'Merriweather', serif; }
+
+.bg-brand-green { background-color: #004d00; }
+.text-brand-green { color: #004d00; }
+.text-brand-yellow { color: #f2c700; }
+
+
+.modal-overlay { z-index: 100; }
+
+.modal-content {
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-img {
+    width: 100%;
+    max-height: 65vh;
+    object-fit: contain;
+}
+
+.service-card {
+    transition: all 0.3s ease;
+}
+.service-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 30px rgba(0,0,0,0.2);
+}
+
+.hover\:text-brand-yellow:hover {
+    color: #f2c700;
+}
+</style>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+
+<header class="bg-brand-green fixed top-0 left-0 right-0 shadow-lg z-50">
+<div class="container mx-auto py-4 flex justify-between items-center px-4">
+
+<a href="index.html" class="flex items-center text-brand-yellow font-bold">
+<img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-10 w-10 mr-2 rounded-md">
+<span>Rural Bank of San Rafael</span>
+</a>
+
+<nav class="hidden md:flex space-x-6 text-white items-center">
+
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+
+<div class="relative group">
+    
+    <button class="text-brand-yellow focus:outline-none">
+        Services ▾
+    </button>
+
+    <div class="absolute left-0 mt-2 pt-2 w-52 bg-white text-black rounded-md shadow-lg 
+        opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+        transition-all duration-200">
+
+<a href="#savings" onclick="showSection('savings')" 
+class="block px-4 py-2 hover:bg-gray-100">
+Savings & Deposits
+</a>
+
+<a href="#loans" onclick="showSection('loans')" 
+class="block px-4 py-2 hover:bg-gray-100">
+Loan Services
+</a>
+
+<a href="real-and-other-properties-acquired.html" 
+class="block px-4 py-2 hover:bg-gray-100">
+Real & Other Properties
+</a>
+
+    </div>
+
+</div>
+
+<a href="careers.html">Careers</a>
+<a href="contact.html">Contact</a>
+<a href="login.html" data-auth-link>Login</a>
+
+</nav>
+</div>
+</header>
+
+  <section class="relative bg-gradient-to-r from-green-900 to-green-700 text-white py-16 mt-10 overflow-hidden">
+
+<!-- subtle background glow -->
+<div class="absolute -top-20 -left-20 w-72 h-72 bg-yellow-400 opacity-20 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-20 -right-20 w-72 h-72 bg-white opacity-10 rounded-full blur-3xl"></div>
+
+<div class="max-w-5xl mx-auto px-6">
+
+<div class="backdrop-blur-md bg-white/10 p-8 md:p-10 rounded-3xl shadow-2xl text-center border border-white/20">
+
+<h1 class="text-3xl md:text-5xl font-black mb-4 leading-tight">
+Smart Banking <span class="text-yellow-400">Starts Here</span>
+</h1>
+
+<p class="text-sm md:text-lg opacity-90 mb-6">
+Savings, Loans, and Financial Solutions designed for your future.
+</p>
+
+<div class="flex justify-center gap-4">
+<a href="#savings" onclick="showSection('savings')" 
+class="bg-yellow-400 text-green-900 px-6 py-3 rounded-xl font-bold hover:scale-105 hover:shadow-lg transition">
+Savings
+</a>
+
+<a href="#loans" onclick="showSection('loans')" 
+class="border border-white px-6 py-3 rounded-xl hover:bg-white hover:text-green-900 transition">
+Loans
+</a>
+</div>
+
+</div>
+</div>
+</section>
+
+<main class="pt-32 pb-16 px-4">
+<div class="container mx-auto max-w-6xl">
+
+<h1 class="text-4xl font-bold text-brand-green mb-10 text-center">
+Our Financial Services
+</h1>
+
+<!-- SAVINGS -->
+<div id="savings" class="mb-12">
+<h2 class="text-2xl font-bold text-brand-green mb-4">Savings & Deposits</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+<!-- SAVINGS ACCOUNT -->
+<button onclick="openModal('modal-savings')" 
+class="service-card bg-white p-6 rounded-xl shadow border text-left">
+<h3 class="font-bold text-brand-green text-lg">Savings Account</h3>
+</button>
+
+<!-- CHECKING ACCOUNT -->
+<button onclick="openModal('modal-checking')" 
+class="service-card bg-white p-6 rounded-xl shadow border text-left">
+<h3 class="font-bold text-brand-green text-lg">Checking Account</h3>
+</button>
+
+</div>
+</div>
+
+<!-- LOANS -->
+<div id="loans">
+<h2 class="text-2xl font-bold text-brand-green mb-4">Loan Services</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+<button onclick="openModal('modal-business')" class="service-card bg-white p-6 rounded-xl shadow border text-left">
+<h3 class="font-bold text-brand-green">Business Loan</h3>
+</button>
+
+<button onclick="openModal('modal-car')" class="service-card bg-white p-6 rounded-xl shadow border text-left">
+<h3 class="font-bold text-brand-green">Car Loan</h3>
+</button>
+
+<button onclick="openModal('modal-housing')" class="service-card bg-white p-6 rounded-xl shadow border text-left">
+<h3 class="font-bold text-brand-green">Housing Loan</h3>
+</button>
+
+<button onclick="openModal('modal-barangay')" class="service-card bg-white p-6 rounded-xl shadow border text-left">
+<h3 class="font-bold text-brand-green">Barangay Loan</h3>
+</button>
+
+<button onclick="openModal('modal-agri')" class="service-card bg-white p-6 rounded-xl shadow border text-left">
+<h3 class="font-bold text-brand-green">Agricultural Loan</h3>
+</button>
+
+<button onclick="openModal('modal-salary')" class="service-card bg-white p-6 rounded-xl shadow border text-left">
+<h3 class="font-bold text-brand-green">Salary Loan</h3>
+</button>
+
+</div>
+</div>
+</div>
+</main>
+
+<!-- SAVINGS ACCOUNT MODAL -->
+<div id="modal-savings" class="modal-overlay fixed inset-0 bg-black/80 hidden items-center justify-center p-4">
+
+<div class="modal-content bg-white rounded-xl max-w-xl w-full p-6 relative">
+
+<button onclick="closeModal('modal-savings')" class="absolute top-2 right-4 text-2xl">&times;</button>
+
+<h3 class="text-xl font-bold mb-4 text-brand-green">Savings Account</h3>
+
+<!-- PAGE 1 -->
+<div id="savings-page-1">
+<img src="SAVINGS ACCOUNT.png" class="modal-img mb-4">
+
+<button onclick="showPage('savings', 2)" 
+class="w-full bg-brand-green text-white py-3 rounded-lg">
+View Requirements →
+</button>
+</div>
+
+<!-- PAGE 2 -->
+<div id="savings-page-2" class="hidden max-h-[60vh] overflow-y-auto">
+
+<ul class="list-decimal ml-5 text-sm space-y-2">
+<li>Two (2) Valid Id's</li>
+<li>Three (3) Pcs of 1x1 Picture</li>
+<li>Proof of Billing</li>
+</ul>
+
+<div class="mt-4 flex justify-between">
+<button onclick="showPage('savings', 1)" class="bg-gray-300 px-4 py-2 rounded">
+← Back
+</button>
+
+<button onclick="closeModal('modal-savings')" class="bg-brand-green text-white px-4 py-2 rounded">
+Done
+</button>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- CHECKING ACCOUNT MODAL -->
+<div id="modal-checking" class="modal-overlay fixed inset-0 bg-black/80 hidden items-center justify-center p-4">
+
+<div class="modal-content bg-white rounded-xl max-w-xl w-full p-6 relative">
+
+<button onclick="closeModal('modal-checking')" class="absolute top-2 right-4 text-2xl">&times;</button>
+
+<h3 class="text-xl font-bold mb-4 text-brand-green">Checking Account</h3>
+
+<!-- PAGE 1 -->
+<div id="checking-page-1">
+<img src="CHECKING ACCOUNT.png" class="modal-img mb-4">
+
+<button onclick="showPage('checking', 2)" 
+class="w-full bg-brand-green text-white py-3 rounded-lg">
+View Requirements →
+</button>
+</div>
+
+<!-- PAGE 2 -->
+<div id="checking-page-2" class="hidden max-h-[60vh] overflow-y-auto">
+
+<!-- TYPE SELECTOR -->
+<div class="flex gap-3 mb-6">
+<button onclick="showCheckingType('regular')" 
+data-type="regular"
+class="checking-tab flex-1 bg-brand-green text-white py-2 rounded-lg font-bold">
+Regular (₱3,000)
+</button>
+
+<button onclick="showCheckingType('combo')" 
+data-type="combo"
+class="checking-tab flex-1 bg-gray-200 text-black py-2 rounded-lg font-bold">
+Combo (₱5,000)
+</button>
+</div>
+
+<!-- REGULAR -->
+<div id="checking-regular">
+
+<h4 class="font-bold text-lg mb-2 text-brand-green">
+Demand Deposit Regular (No Passbook)
+</h4>
+
+<p class="mb-3 text-sm text-gray-600">
+Initial Deposit: ₱3,000
+</p>
+
+<ul class="list-decimal ml-5 text-sm space-y-2">
+<li>Two (2) valid IDs</li>
+<li>Three (3) pieces 1x1 picture</li>
+<li>Proof of Billing</li>
+<li>Approval Letter of Loan (for loan clients)</li>
+<li>DTI Permit (for business clients)</li>
+</ul>
+
+</div>
+
+<!-- COMBO -->
+<div id="checking-combo" class="hidden">
+
+<h4 class="font-bold text-lg mb-2 text-brand-green">
+Demand Deposit Combo (With Passbook)
+</h4>
+
+<p class="mb-3 text-sm text-gray-600">
+Initial Deposit: ₱5,000
+</p>
+
+<ul class="list-decimal ml-5 text-sm space-y-2">
+<li>Two (2) valid IDs</li>
+<li>Three (3) pieces 1x1 picture</li>
+<li>Proof of Billing</li>
+<li>Approval Letter of Loan (for loan clients)</li>
+<li>DTI Permit (for business clients)</li>
+</ul>
+
+</div>
+
+<!-- BUTTONS -->
+<div class="mt-6 flex justify-between">
+<button onclick="showPage('checking',1)" class="bg-gray-300 px-4 py-2 rounded">
+← Back
+</button>
+
+<button onclick="closeModal('modal-checking')" 
+class="bg-brand-green text-white px-4 py-2 rounded">
+Done
+</button>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- BUSINESS LOAN MODAL -->
+
+<div id="modal-business" class="modal-overlay fixed inset-0 bg-black/80 hidden items-center justify-center p-4">
+
+<div class="modal-content bg-white rounded-xl max-w-xl w-full p-6 relative">
+
+<button onclick="closeModal('modal-business')" class="absolute top-2 right-4 text-2xl">&times;</button>
+
+<h3 class="text-xl font-bold mb-4 text-brand-green">Business Loan</h3>
+
+<!-- PAGE 1 IMAGE -->
+<div id="business-page-1">
+<img src="BUSINESS LOAN.png" class="modal-img mb-4">
+
+<div class="mt-4">
+<button onclick="showPage('business', 2)"
+ class="w-full bg-brand-green text-white py-3 rounded-lg font-semibold 
+    transition duration-300 ease-in-out hover:bg-green-800 hover:scale-105">
+View Requirements →
+</button>
+</div>
+</div>
+
+<!-- PAGE 2 REQUIREMENTS -->
+<div id="business-page-2" class="hidden max-h-[60vh] overflow-y-auto">
+
+<ul class="list-decimal ml-5 text-sm space-y-2">
+<li>Business Loan Application form SME duly signed by client</li>
+<li>Authority to carry out inquiries form duly signed by the client</li>
+<li>Resume of Borrowers</li>
+<li>Business Profile</li>
+<li>Latest DTI Permit</li>
+<li>Latest Business/Mayor's Permit</li>
+<li>Income Tax Return last two (2) years</li>
+<li>Audited Financial Statement last two (2) years</li>
+<li>In-House FS last two (2) years</li>
+<li>Two (2) valid IDs</li>
+<li>2x2 Pictures</li>
+<li>List of Suppliers and Customers</li>
+<li>TIN Number</li>
+<li>Proof of Billing</li>
+<li>Latest Bank Statement</li>
+<li>Detailed Sketch of Residence</li>
+</ul>
+
+<div class="mt-4 flex justify-between">
+<button onclick="showPage('business',1)" class="bg-gray-300 px-4 py-2 rounded">← Back</button>
+<button onclick="closeModal('modal-business')" class="bg-brand-green text-white px-4 py-2 rounded">Done</button>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- Agricultural LOAN MODAL -->
+ <div id="modal-agri" class="modal-overlay fixed inset-0 bg-black/80 hidden items-center justify-center p-4">
+
+<div class="modal-content bg-white rounded-xl max-w-xl w-full p-6 relative">
+
+<button onclick="closeModal('modal-agri')" class="absolute top-2 right-4 text-2xl">&times;</button>
+
+<h3 class="text-xl font-bold mb-4 text-brand-green">Agricultural Loan</h3>
+
+<!-- PAGE 1 IMAGE -->
+<div id="agri-page-1">
+<img src="AGRI LOAN.png" class="modal-img mb-4">
+
+<div class="mt-4">
+<button onclick="showPage('agri', 2)"
+ class="w-full bg-brand-green text-white py-3 rounded-lg font-semibold 
+    transition duration-300 ease-in-out hover:bg-green-800 hover:scale-105">
+View Requirements →
+</button>
+</div>
+</div>
+
+<!-- PAGE 2 REQUIREMENTS -->
+<div id="agri-page-2" class="hidden max-h-[60vh] overflow-y-auto">
+
+<ul class="list-decimal ml-5 text-sm space-y-2">
+<li>Loan Application Form signed by client</li>
+<li>Authority to carry out inquiries form duly signed</li>
+<li>Resume of Borrowers</li>
+<li>Two (2) valid IDs of Borrowers</li>
+<li>2x2 Pictures of Borrowers</li>
+<li>Certificate RSBSA (Registry System for Basic Sectors in Agriculture)</li>
+<li>BARC Certificate (Barangay Agrarian Reform Committee)</li>
+<li>Proof of Billing</li>
+<li>Detailed Sketch of Residence</li>
+</ul>
+
+<div class="mt-4 flex justify-between">
+<button onclick="showPage('agri', 1)" class="bg-gray-300 px-4 py-2 rounded">
+← Back
+</button>
+
+<button onclick="closeModal('modal-agri')" class="bg-brand-green text-white px-4 py-2 rounded">
+Done
+</button>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- Barangay LOAN MODAL -->
+<div id="modal-barangay" class="modal-overlay fixed inset-0 bg-black/80 hidden items-center justify-center p-4">
+
+<div class="modal-content bg-white rounded-xl max-w-xl w-full p-6 relative">
+
+<button onclick="closeModal('modal-barangay')" class="absolute top-2 right-4 text-2xl">&times;</button>
+
+<h3 class="text-xl font-bold mb-4 text-brand-green">Barangay Salary Loan</h3>
+
+<!-- PAGE 1 IMAGE -->
+<div id="barangay-page-1">
+<img src="BARANGAY LOAN.png" class="modal-img mb-4">
+
+<div class="mt-4">
+    <button onclick="showPage('barangay', 2)"
+    class="w-full bg-brand-green text-white py-3 rounded-lg font-semibold 
+    transition duration-300 ease-in-out hover:bg-green-800 hover:scale-105">
+        View Requirements →
+    </button>
+</div>
+</div>
+
+<!-- PAGE 2 REQUIREMENTS -->
+<div id="barangay-page-2" class="hidden max-h-[60vh] overflow-y-auto">
+
+<ul class="list-decimal ml-5 text-sm space-y-2">
+<li>Loan Application Form signed by client</li>
+<li>Authority to carry out inquiries form duly signed</li>
+<li>Resume of Borrowers</li>
+<li>Two (2) valid IDs of Borrowers</li>
+<li>2x2 Pictures of Borrowers</li>
+<li>Certificate of Oath Taking</li>
+<li>Copy of latest payroll</li>
+<li>Barangay Resolution</li>
+<li>Proof of Billing</li>
+<li>Detailed Sketch of Residence</li>
+</ul>
+
+<div class="mt-4 flex justify-between">
+<button onclick="showPage('barangay', 1)" class="bg-gray-300 px-4 py-2 rounded">
+← Back
+</button>
+
+<button onclick="closeModal('modal-barangay')" class="bg-brand-green text-white px-4 py-2 rounded">
+Done
+</button>
+</div>
+
+</div>
+
+</div>
+</div>
+<!-- CAR LOAN -->
+<div id="modal-car" class="modal-overlay fixed inset-0 bg-black/80 hidden items-center justify-center p-4">
+
+<div class="modal-content bg-white rounded-xl max-w-xl w-full p-6 relative">
+
+<button onclick="closeModal('modal-car')" class="absolute top-2 right-4 text-2xl">&times;</button>
+
+<h3 class="text-xl font-bold mb-4 text-brand-green">Car Loan</h3>
+
+<!-- PAGE 1 IMAGE -->
+<div id="car-page-1">
+<img src="CAR LOAN.jpg" class="modal-img mb-4">
+
+<div class="mt-4">
+<button onclick="showPage('car', 2)"
+ class="w-full bg-brand-green text-white py-3 rounded-lg font-semibold 
+    transition duration-300 ease-in-out hover:bg-green-800 hover:scale-105">
+View Requirements →
+</button>
+</div>
+</div>
+
+<!-- PAGE 2 REQUIREMENTS -->
+<div id="car-page-2" class="hidden max-h-[60vh] overflow-y-auto">
+
+<ul class="list-decimal ml-5 text-sm space-y-2">
+<li>Business Loan Application form SME duly signed by client</li>
+<li>Authority to carry out inquiries form duly signed by the client</li>
+<li>Resume of Borrowers</li>
+<li>Business Profile</li>
+<li>Latest DTI Permit</li>
+<li>Latest Business/Mayor's Permit</li>
+<li>Income Tax Return last two (2) years</li>
+<li>Audited Financial Statement last two (2) years</li>
+<li>In-House FS last two (2) years</li>
+<li>Two (2) valid IDs</li>
+<li>2x2 Pictures</li>
+<li>List of Suppliers and Customers</li>
+<li>TIN Number</li>
+<li>Proof of Billing</li>
+<li>Latest Bank Statement</li>
+<li>Detailed Sketch of Residence</li>
+</ul>
+
+<div class="mt-4 flex justify-between">
+<button onclick="showPage('car', 1)" class="bg-gray-300 px-4 py-2 rounded">← Back</button>
+<button onclick="closeModal('modal-car')" class="bg-brand-green text-white px-4 py-2 rounded">Done</button>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- HOUSING LOAN -->
+<div id="modal-housing" class="modal-overlay fixed inset-0 bg-black/80 hidden items-center justify-center p-4">
+
+<div class="modal-content bg-white rounded-xl max-w-xl w-full p-6 relative">
+
+<button onclick="closeModal('modal-housing')" class="absolute top-2 right-4 text-2xl">&times;</button>
+
+<h3 class="text-xl font-bold mb-4 text-brand-green">Housing Loan</h3>
+
+<!-- PAGE 1 -->
+<div id="housing-page-1">
+<img src="HOUSING LOAN.jpg" class="modal-img mb-4">
+
+<button onclick="showPage('housing', 2)" 
+class="w-full bg-brand-green text-white py-3 rounded-lg">
+View Requirements →
+</button>
+</div>
+
+<!-- PAGE 2 -->
+<div id="housing-page-2" class="hidden max-h-[60vh] overflow-y-auto">
+
+<ul class="list-decimal ml-5 text-sm space-y-2">
+<li>Requirement 1</li>
+<li>Requirement 2</li>
+<li>Requirement 3</li>
+</ul>
+
+<div class="mt-4 flex justify-between">
+<button onclick="showPage('housing', 1)" class="bg-gray-300 px-4 py-2 rounded">
+← Back
+</button>
+
+<button onclick="closeModal('modal-housing')" class="bg-brand-green text-white px-4 py-2 rounded">
+Done
+</button>
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<!--SALARY LOAN -->
+<div id="modal-salary" class="modal-overlay fixed inset-0 bg-black/80 hidden items-center justify-center p-4">
+
+<div class="modal-content bg-white rounded-xl max-w-xl w-full p-6 relative">
+
+<button onclick="closeModal('modal-salary')" class="absolute top-2 right-4 text-2xl">&times;</button>
+
+<h3 class="text-xl font-bold mb-4 text-brand-green">Salary Loan</h3>
+
+<div id="salary-page-1">
+<img src="SALARY LOAN.png" class="modal-img mb-4">
+
+<button onclick="showPage('salary', 2)" 
+class="w-full bg-brand-green text-white py-3 rounded-lg">
+View Requirements →
+</button>
+</div>
+
+<div id="salary-page-2" class="hidden max-h-[60vh] overflow-y-auto">
+
+<ul class="list-decimal ml-5 text-sm space-y-2">
+<li>Requirement 1</li>
+<li>Requirement 2</li>
+<li>Requirement 3</li>
+</ul>
+
+<div class="mt-4 flex justify-between">
+<button onclick="showPage('salary', 1)" class="bg-gray-300 px-4 py-2 rounded">
+← Back
+</button>
+
+<button onclick="closeModal('modal-salary')" class="bg-brand-green text-white px-4 py-2 rounded">
+Done
+</button>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+
+function showCheckingType(type) {
+
+    // SHOW / HIDE CONTENT
+    document.getElementById("checking-regular").classList.toggle("hidden", type !== "regular");
+    document.getElementById("checking-combo").classList.toggle("hidden", type !== "combo");
+
+    // RESET ALL BUTTONS
+    document.querySelectorAll(".checking-tab").forEach(btn => {
+        btn.classList.remove("bg-brand-green","text-white");
+        btn.classList.add("bg-gray-200","text-black");
+    });
+
+    // SELECT ACTIVE BUTTON BASED ON TYPE
+    const activeBtn = document.querySelector(`[data-type="${type}"]`);
+
+    if (activeBtn) {
+        activeBtn.classList.remove("bg-gray-200","text-black");
+        activeBtn.classList.add("bg-brand-green","text-white");
+    }
+}
+
+
+// OPEN MODAL + AUTO RESET
+function openModal(id) {
+    const modal = document.getElementById(id);
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    // AUTO RESET (PAGE 1)
+    const loan = id.replace('modal-', '');
+
+    const page1 = document.getElementById(`${loan}-page-1`);
+    const page2 = document.getElementById(`${loan}-page-2`);
+
+    if (page1 && page2) {
+        page1.classList.remove('hidden');
+        page2.classList.add('hidden');
+    }
+
+    // ✅ DEFAULT SELECT FOR CHECKING
+    if (id === "modal-checking") {
+        setTimeout(() => showCheckingType('regular'), 100);
+    }
+}
+
+// CLOSE MODAL (FIXED)
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+// 🔥 UNIVERSAL PAGE SWITCH (REPLACES ALL)
+function showPage(loan, page) {
+    document.getElementById(`${loan}-page-1`).classList.toggle('hidden', page === 2);
+    document.getElementById(`${loan}-page-2`).classList.toggle('hidden', page === 1);
+}
+
+// SECTION SWITCH (UNCHANGED)
+function showSection(section) {
+    const savings = document.getElementById("savings");
+    const loans = document.getElementById("loans");
+
+    savings.classList.add("hidden");
+    loans.classList.add("hidden");
+
+    if (section === "savings") {
+        savings.classList.remove("hidden");
+    } else {
+        loans.classList.remove("hidden");
+    }
+}
+
+// LOAD DEFAULT
+window.addEventListener("load", function () {
+    const hash = window.location.hash;
+
+    if (hash === "#loans") {
+        showSection("loans");
+    } else {
+        showSection("savings");
+    }
+});
+
+// CLICK OUTSIDE CLOSE
+document.addEventListener('click', function(e) {
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    });
+});
+
+// ESC CLOSE
+document.addEventListener('keydown', function(e) {
+    if (e.key === "Escape") {
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        });
+    }
+});
+
+</script>
+
+<footer class="relative bg-brand-green text-white pt-20 pb-10 overflow-hidden">
+
+<!-- 🌟 BACKGROUND GLOW -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-green-400 opacity-10 blur-3xl rounded-full"></div>
+
+<div class="relative max-w-6xl mx-auto px-6">
+
+    <!-- ✨ GLASS CONTAINER -->
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/10">
+
+        <!-- GRID -->
+        <div class="grid md:grid-cols-4 gap-10 text-left">
+
+            <!-- 🏦 BRAND -->
+           <div class="footer-fade">
+                <h3 class="text-xl font-bold text-brand-yellow mb-4">
+                    Rural Bank of San Rafael
+                </h3>
+                <p class="text-gray-200 text-sm leading-relaxed">
+                    Empowering communities through trusted financial services since 1967.
+                </p>
+            </div>
+
+            <!-- 🔗 LINKS -->
+           <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-gray-200">
+                    <li><a href="#home" class="hover:text-brand-yellow transition">Home</a></li>
+                    <li><a href="about.html" class="hover:text-brand-yellow transition">About</a></li>
+                    <li><a href="services.html" class="hover:text-brand-yellow transition">Services</a></li>
+                    <li><a href="contact.html" class="hover:text-brand-yellow transition">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- 💼 SERVICES -->
+            <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Services</h4>
+               <ul class="space-y-2 text-sm text-gray-200">
+    <li>
+        <a href="services.html#savings" class="hover:text-brand-yellow transition">
+            Savings Account
+        </a>
+    </li>
+    <li>
+        <a href="services.html#checking" class="hover:text-brand-yellow transition">
+            Checking Account
+        </a>
+    </li>
+    <li>
+        <a href="services.html#loans" class="hover:text-brand-yellow transition">
+            Salary Loan
+        </a>
+    </li>
+    <li>
+        <a href="services.html#loans" class="hover:text-brand-yellow transition">
+            Agricultural Loan
+        </a>
+    </li>
+</ul>
+            </div>
+
+            <!-- 📞 CONTACT -->
+            <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Contact</h4>
+                <ul class="space-y-2 text-sm text-gray-200">
+<li>
+    <a href="https://maps.app.goo.gl/6GA9aLSC1aqEKkA59" 
+       target="_blank"
+       class="hover:text-brand-yellow transition">
+        📍 San Rafael, Bulacan
+    </a>
+</li>
+<li>
+    <a href="tel:09123456789" class="hover:text-brand-yellow transition">
+        📞 0932-848-6876
+    </a>
+</li>
+<li>
+    <a href="mailto:rbsanrafael@yahoo.com class="hover:text-brand-yellow transition">
+        📧 rbsanrafael@yahoo.com
+    </a>
+</li>
+                    <li>🕒 Mon - Fri: 8AM - 5PM</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="border-t border-white/20 my-8"></div>
+
+        <!-- BOTTOM -->
+        <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+
+            <p>
+                © 2026 Rural Bank of San Rafael. All rights reserved.
+            </p>
+
+            <!-- SOCIALS -->
+
+<div class="flex space-x-4 mt-4 md:mt-0">
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Facebook
+    </a>
+
+    <a href="mailto:rbsanrafael@yahoo.com" 
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Email
+    </a>
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Messenger
+    </a>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+</footer>
+<script src="auth.js"></script>
+</body>
+</html>

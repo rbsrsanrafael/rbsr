@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us - Rural Bank of San Rafael</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+body { 
+    font-family: 'Merriweather', serif;
+    opacity: 0;
+    animation: fadeInPage 0.5s forwards;
+    transition: opacity 0.4s ease-in-out;
+}
+
+@keyframes fadeInPage {
+    to { opacity: 1; }
+}
+
+body.fade-out {
+    opacity: 0;
+}
+
+.bg-brand-green { background-color: #004d00; }
+.bg-brand-green-light { background-color: #f0f4f0; }
+.text-brand-green { color: #004d00; }
+.text-brand-yellow { color: #f2c700; }
+
+.branch-location.active {
+    background-color: #004d00;
+    color: white !important;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.branch-location.active h3 {
+    color: #f2c700 !important;
+}
+
+.branch-location.active p,
+.branch-location.active a {
+    color: white !important;
+}
+
+.branch-location:hover:not(.active) {
+    background-color: #e2e8f0;
+}
+
+.hover\:text-brand-yellow:hover {
+    color: #f2c700;
+}
+</style>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+
+<header class="bg-brand-green fixed top-0 left-0 right-0 shadow-lg z-50">
+<div class="container mx-auto px-4 py-4 flex justify-between items-center">
+
+<a href="index.html" class="flex items-center text-brand-yellow font-bold">
+<img src="277570418_377604507712528_8014509792721781536_n.jpg" 
+class="h-10 w-10 mr-2 rounded-md">
+<span>Rural Bank of San Rafael</span>
+</a>
+
+<!-- NAV -->
+<nav class="hidden md:flex space-x-6 text-white items-center">
+
+<a href="index.html" class="hover:text-brand-yellow">Home</a>
+<a href="about.html" class="hover:text-brand-yellow">About</a>
+
+<!-- DROPDOWN -->
+<div class="relative group">
+<button class="hover:text-brand-yellow focus:outline-none">
+Services ▾
+</button>
+
+<div class="absolute left-0 mt-2 pt-2 w-52 bg-white text-black rounded-md shadow-lg 
+opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+transition-all duration-200">
+
+<a href="services.html#savings" class="block px-4 py-2 hover:bg-gray-100">
+Savings & Deposits
+</a>
+
+<a href="services.html#loans" class="block px-4 py-2 hover:bg-gray-100">
+Loan Services
+</a>
+
+<a href="real-and-other-properties-acquired.html" class="block px-4 py-2 hover:bg-gray-100">
+Real & Other Properties
+</a>
+
+</div>
+</div>
+
+<a href="careers.html" class="hover:text-brand-yellow">Careers</a>
+<a href="contact.html" class="text-brand-yellow font-bold">Contact</a>
+<a href="login.html" class="hover:text-brand-yellow" data-auth-link>Login</a>
+
+</nav>
+
+<!-- MOBILE BUTTON -->
+<button id="mobile-menu-button" class="md:hidden text-white text-2xl">
+☰
+</button>
+
+</div>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu" class="hidden md:hidden px-4 pb-4 text-white space-y-2">
+
+<a href="index.html" class="block py-2">Home</a>
+<a href="about.html" class="block py-2">About</a>
+
+<a href="services.html#savings" class="block py-2">
+Savings & Deposits
+</a>
+
+<a href="services.html#loans" class="block py-2">
+Loan Services
+</a>
+
+<a href="careers.html" class="block py-2 hover:text-brand-yellow">
+Careers
+</a>
+
+<a href="contact.html" class="block py-2 font-bold">
+Contact
+</a>
+
+<a href="login.html" class="block py-2" data-auth-link>Login</a>
+
+</div>
+
+</header>
+
+<main class="pt-32 pb-20">
+<section class="bg-brand-green-light px-4">
+
+<div class="bg-white p-8 md:p-12 rounded-xl shadow-2xl max-w-6xl mx-auto">
+
+<h2 class="text-4xl font-bold text-center mb-12 text-brand-green">
+Contact Us
+</h2>
+
+<div class="flex flex-col md:flex-row gap-8">
+
+<!-- LEFT -->
+<div class="md:w-1/3 text-gray-700 flex flex-col gap-2">
+
+<div id="branch-head-office" onclick="updateMap('branch-head-office', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1362.3659859721458!2d120.93398648507578!3d15.028584038758257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33970186bfe6bf43%3A0x8b988e554d4a2991!2sRural%20Bank%20of%20San%20Rafael%20(Head%20Office)!5e0!3m2!1sen!2sph!4v1770780888177!5m2!1sen!2sph')" class="branch-location p-4 rounded-lg cursor-pointer transition-all duration-300 active">
+<h3 class="text-2xl font-bold text-brand-green mb-2">Head Office</h3>
+<p>Cruz na Daan, San Rafael, Bulacan</p>
+<p>(044)-617-8719</p>
+<p class="mt-2">
+  <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 hover:text-brand-yellow transition">Facebook</a>
+</p>
+</div>
+
+<div id="branch-san-ildefonso" onclick="updateMap('branch-san-ildefonso', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d963.096276743054!2d120.93859796951227!3d15.082089394000976!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x339702fd1945f637%3A0x219e4113f8c325f6!2sRural%20Bank%20Of%20San%20Rafael%20Bulacan%20Inc.!5e0!3m2!1sen!2sph!4v1770780784079!5m2!1sen!2sph')" class="branch-location p-4 rounded-lg cursor-pointer transition-all duration-300">
+<h3 class="text-2xl font-bold text-brand-green mb-2">San Ildefonso</h3>
+<p>San Juan, San Ildefonso, Bulacan</p>
+<p>(044)-797-0544</p>
+<p class="mt-2">
+  <a href="https://www.facebook.com/rbsr.sib" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 hover:text-brand-yellow transition">Facebook</a>
+</p>
+</div>
+
+<div id="branch-baliwag" onclick="updateMap('branch-baliwag', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d572.9737992506499!2d120.89672609430393!3d14.965318795772195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x339700010d1b5267%3A0xcf6cacbfa68dc194!2sRural%20Bank%20of%20San%20Rafael!5e0!3m2!1sen!2sph!4v1770780933210!5m2!1sen!2sph')" class="branch-location p-4 rounded-lg cursor-pointer transition-all duration-300">
+<h3 class="text-2xl font-bold text-brand-green mb-2">Baliwag</h3>
+<p>B.S Aquino Tangos, Baliwag, Bulacan</p>
+<p>(044)-766-4293</p>
+<p class="mt-2">
+  <a href="https://www.facebook.com/rbsrtangos.baliwag" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-600 hover:text-brand-yellow transition">Facebook</a>
+</p>
+</div>
+
+</div>
+
+<!-- MAP -->
+<div class="md:w-2/3">
+<iframe id="location-map"
+src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1362.3659859721458!2d120.93398648507578!3d15.028584038758257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33970186bfe6bf43%3A0x8b988e554d4a2991!2sRural%20Bank%20of%20San%20Rafael%20(Head%20Office)!5e0!3m2!1sen!2sph!4v1770780888177!5m2!1sen!2sph"
+width="100%" height="450"
+style="border:0;"
+loading="lazy"
+class="rounded-xl shadow-lg">
+</iframe>
+</div>
+
+</div>
+</div>
+</section>
+</main>
+
+<footer class="bg-brand-green text-white py-8 text-center mt-12">
+<p class="opacity-75">© 2026 Rural Bank of San Rafael. All Rights Reserved.</p>
+</footer>
+
+<script>
+
+// MOBILE MENU
+const btn = document.getElementById("mobile-menu-button");
+const menu = document.getElementById("mobile-menu");
+
+btn.onclick = () => menu.classList.toggle("hidden");
+
+// MAP SWITCH
+function updateMap(branchId, mapUrl) {
+document.getElementById('location-map').src = mapUrl;
+
+document.querySelectorAll('.branch-location').forEach(el => {
+el.classList.remove('active');
+});
+
+document.getElementById(branchId).classList.add('active');
+}
+
+// PAGE TRANSITION
+document.querySelectorAll('a[href]').forEach(link => {
+link.addEventListener('click', function(e) {
+const target = this.getAttribute('href');
+
+if (target.startsWith('#') || target.startsWith('http')) return;
+
+e.preventDefault();
+document.body.classList.add('fade-out');
+
+setTimeout(() => {
+window.location.href = target;
+}, 400);
+});
+});
+
+</script>
+
+<footer class="relative bg-brand-green text-white pt-20 pb-10 overflow-hidden">
+
+<!-- 🌟 BACKGROUND GLOW -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-green-400 opacity-10 blur-3xl rounded-full"></div>
+
+<div class="relative max-w-6xl mx-auto px-6">
+
+    <!-- ✨ GLASS CONTAINER -->
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/10">
+
+        <!-- GRID -->
+        <div class="grid md:grid-cols-4 gap-10 text-left">
+
+            <!-- 🏦 BRAND -->
+           <div class="footer-fade">
+                <h3 class="text-xl font-bold text-brand-yellow mb-4">
+                    Rural Bank of San Rafael
+                </h3>
+                <p class="text-gray-200 text-sm leading-relaxed">
+                    Empowering communities through trusted financial services since 1967.
+                </p>
+            </div>
+
+            <!-- 🔗 LINKS -->
+           <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-gray-200">
+                    <li><a href="#home" class="hover:text-brand-yellow transition">Home</a></li>
+                    <li><a href="about.html" class="hover:text-brand-yellow transition">About</a></li>
+                    <li><a href="services.html" class="hover:text-brand-yellow transition">Services</a></li>
+                    <li><a href="contact.html" class="hover:text-brand-yellow transition">Contact</a></li>
+                </ul>
+            </div>
+
+            <!-- 💼 SERVICES -->
+            <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Services</h4>
+               <ul class="space-y-2 text-sm text-gray-200">
+    <li>
+        <a href="services.html#savings" class="hover:text-brand-yellow transition">
+            Savings Account
+        </a>
+    </li>
+    <li>
+        <a href="services.html#checking" class="hover:text-brand-yellow transition">
+            Checking Account
+        </a>
+    </li>
+    <li>
+        <a href="services.html#loans" class="hover:text-brand-yellow transition">
+            Salary Loan
+        </a>
+    </li>
+    <li>
+        <a href="services.html#loans" class="hover:text-brand-yellow transition">
+            Agricultural Loan
+        </a>
+    </li>
+</ul>
+            </div>
+
+            <!-- 📞 CONTACT -->
+            <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Contact</h4>
+                <ul class="space-y-2 text-sm text-gray-200">
+<li>
+    <a href="https://maps.app.goo.gl/6GA9aLSC1aqEKkA59" 
+       target="_blank"
+       class="hover:text-brand-yellow transition">
+        📍 San Rafael, Bulacan
+    </a>
+</li>
+<li>
+    <a href="tel:09123456789" class="hover:text-brand-yellow transition">
+        📞 0932-848-6876
+    </a>
+</li>
+<li>
+    <a href="mailto:rbsanrafael@yahoo.com" class="hover:text-brand-yellow transition">
+        📧 rbsanrafael@yahoo.com
+    </a>
+</li>
+                    <li>🕒 Mon - Fri: 8AM - 5PM</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="border-t border-white/20 my-8"></div>
+
+        <!-- BOTTOM -->
+        <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+
+            <p>
+                © 2026 Rural Bank of San Rafael. All rights reserved.
+            </p>
+
+            <!-- SOCIALS -->
+
+<div class="flex space-x-4 mt-4 md:mt-0">
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Facebook
+    </a>
+
+    <a href="mailto:rbsanrafael@yahoo.com" 
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Email
+    </a>
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Messenger
+    </a>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+</footer>
+<script src="auth.js"></script>
+</body>
+</html>

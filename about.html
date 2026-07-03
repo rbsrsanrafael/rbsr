@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us - Rural Bank of San Rafael</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+html { scroll-padding-top: 120px; }
+
+body {
+    margin: 0;
+    font-family: 'Merriweather', serif;
+    background: linear-gradient(to bottom, #004d00, #f5f5f5);
+}
+
+/* COLORS */
+.bg-brand-green { background-color: #004d00; }
+.text-brand-green { color: #004d00; }
+.text-brand-yellow { color: #f2c700; }
+
+/* FLOAT EFFECT */
+.float-card {
+    transition: all 0.35s ease;
+}
+.float-card:hover {
+    transform: translateY(-12px) scale(1.03);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+}
+.glow-hover:hover {
+    box-shadow: 0 0 0 2px rgba(242,199,0,0.4),
+                0 30px 60px rgba(0,0,0,0.3);
+}
+
+/* IMAGE */
+.image-hover {
+    transition: all 0.5s ease;
+}
+.image-hover:hover {
+    transform: scale(1.08) rotate(1deg);
+}
+
+/* SLIDER */
+#slider-image {
+    transition: opacity 0.5s ease-in-out;
+}
+
+.hover\:text-brand-yellow:hover {
+    color: #f2c700;
+}
+</style>
+</head>
+
+<body class="text-white">
+
+<!-- NAVIGATION BAR -->
+<header class="bg-brand-green bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+<div class="container mx-auto px-6 py-4 flex justify-between items-center">
+
+<a href="index.html" class="flex items-center text-lg md:text-xl font-bold text-brand-yellow">
+<img src="277570418_377604507712528_8014509792721781536_n.jpg" 
+class="h-8 w-8 md:h-10 md:w-10 mr-3 rounded-md">
+<span>Rural Bank of San Rafael (Bulacan) Inc.</span>
+</a>
+
+<nav class="hidden md:flex space-x-6 text-white items-center">
+<a href="index.html" class="hover:text-brand-yellow">Home</a>
+<a href="about.html" class="text-brand-yellow font-bold">About</a>
+
+<div class="relative group">
+<button class="hover:text-brand-yellow">Services ▾</button>
+<div class="absolute left-0 mt-2 w-52 bg-white text-black rounded-md shadow-lg 
+opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+<a href="services.html#savings" class="block px-4 py-2 hover:bg-gray-100">Savings & Deposits</a>
+<a href="services.html#loans" class="block px-4 py-2 hover:bg-gray-100">Loan Services</a>
+<a href="real-and-other-properties-acquired.html" class="block px-4 py-2 hover:bg-gray-100">Real & Other Properties</a>
+</div>
+</div>
+
+<a href="careers.html" class="hover:text-brand-yellow">Careers</a>
+
+<a href="contact.html" class="hover:text-brand-yellow">Contact</a>
+<a href="login.html" class="hover:text-brand-yellow" data-auth-link>Login</a>
+</nav>
+</div>
+</header>
+
+<!-- DESIGN -->
+<section class="relative pt-40 pb-20 px-6">
+<div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+
+<div>
+<h1 class="text-4xl md:text-5xl font-black text-white mb-4">About Our Bank</h1>
+<p class="text-gray-200 mb-6">
+Committed to excellence, trust, and financial empowerment in every community we serve.
+</p>
+
+<div class="flex gap-4">
+<a href="#mission" class="bg-yellow-400 text-green-900 px-5 py-3 rounded-lg font-bold hover:scale-105 transition">
+Our Mission
+</a>
+<a href="#vision" class="border border-white px-5 py-3 rounded-lg hover:bg-white hover:text-green-900 transition">
+Our Vision
+</a>
+</div>
+</div>
+
+<div class="relative">
+<img id="slider-image" src="1112.jpg" class="rounded-2xl shadow-2xl w-full h-[350px] object-cover">
+<button onclick="prevImage()" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 px-3 py-2 rounded-full">◀</button>
+<button onclick="nextImage()" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 px-3 py-2 rounded-full">▶</button>
+</div>
+
+</div>
+</section>
+
+<!-- About us -->
+<section class="py-20 px-6 bg-white text-gray-800 rounded-t-[40px] -mt-10 relative z-10">
+<div class="max-w-6xl mx-auto text-center">
+
+<h2 class="text-4xl font-black text-brand-green mb-4">Who We Are</h2>
+<div class="w-20 h-1 bg-yellow-400 mx-auto mb-6"></div>
+
+<p class="max-w-2xl mx-auto text-gray-600 mb-12">
+The Rural Bank of San Rafael (Bulacan), Inc. is a trusted financial institution 
+committed to empowering communities through accessible and reliable banking services.
+</p>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+<div class="bg-gray-50 p-6 rounded-2xl shadow float-card glow-hover">
+<div class="text-3xl mb-2">🏦</div>
+<h3 class="font-bold text-brand-green">Who We Are</h3>
+<p class="text-sm text-gray-600 mt-2">Serving since 1967.</p>
+</div>
+
+<div class="bg-gray-50 p-6 rounded-2xl shadow float-card glow-hover">
+<div class="text-3xl mb-2">🔒</div>
+<h3 class="font-bold text-brand-green">Why Trust Us</h3>
+<p class="text-sm text-gray-600 mt-2">Secure & reliable services.</p>
+</div>
+
+<div class="bg-gray-50 p-6 rounded-2xl shadow float-card glow-hover">
+<div class="text-3xl mb-2">💼</div>
+<h3 class="font-bold text-brand-green">What We Offer</h3>
+<p class="text-sm text-gray-600 mt-2">Savings & loans solutions.</p>
+</div>
+
+<div class="bg-gray-50 p-6 rounded-2xl shadow float-card glow-hover">
+<div class="text-3xl mb-2">⭐</div>
+<h3 class="font-bold text-brand-green">Why Choose Us</h3>
+<p class="text-sm text-gray-600 mt-2">Fast & trusted service.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- INFOGRAPHIC -->
+<section class="bg-brand-green text-white py-16 text-center">
+<h2 class="text-3xl font-black mb-10">Our Impact</h2>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+<div class="p-6 bg-white/10 rounded-2xl float-card"><h3 class="text-4xl text-yellow-400">50+</h3><p>Years</p></div>
+<div class="p-6 bg-white/10 rounded-2xl float-card"><h3 class="text-4xl text-yellow-400">10K+</h3><p>Clients</p></div>
+<div class="p-6 bg-white/10 rounded-2xl float-card"><h3 class="text-4xl text-yellow-400">₱1B+</h3><p>Loans</p></div>
+<div class="p-6 bg-white/10 rounded-2xl float-card"><h3 class="text-4xl text-yellow-400">100%</h3><p>Focus</p></div>
+</div>
+</section>
+
+<!-- TIMELINE -->
+<section class="py-20 px-6 bg-white text-gray-800">
+<div class="max-w-5xl mx-auto">
+
+<h2 class="text-4xl font-black text-brand-green text-center mb-16">
+Our Journey
+</h2>
+
+<div class="relative">
+
+<!-- LINE -->
+<div class="absolute left-1/2 transform -translate-x-1/2 w-1 bg-brand-green h-full"></div>
+
+<div class="space-y-16">
+
+<!-- ITEM 1 -->
+<div class="relative flex items-center justify-between">
+
+<div class="w-[45%] text-right">
+<div class="bg-gray-50 p-6 rounded-2xl shadow float-card">
+<h3 class="font-bold text-brand-green">1967</h3>
+<p class="text-sm text-gray-600 mt-2">
+The bank was established to serve the local community.
+</p>
+</div>
+</div>
+
+<div class="w-10 h-10 bg-brand-green rounded-full border-4 border-white z-10"></div>
+
+<div class="w-[45%]"></div>
+
+</div>
+
+<!-- ITEM 2 -->
+<div class="relative flex items-center justify-between">
+
+<div class="w-[45%]"></div>
+
+<div class="w-10 h-10 bg-brand-green rounded-full border-4 border-white z-10"></div>
+
+<div class="w-[45%] text-left">
+<div class="bg-gray-50 p-6 rounded-2xl shadow float-card">
+<h3 class="font-bold text-brand-green">1980s</h3>
+<p class="text-sm text-gray-600 mt-2">
+Expanded services including agricultural and business loans.
+</p>
+</div>
+</div>
+
+</div>
+
+<!-- ITEM 3 -->
+<div class="relative flex items-center justify-between">
+
+<div class="w-[45%] text-right">
+<div class="bg-gray-50 p-6 rounded-2xl shadow float-card">
+<h3 class="font-bold text-brand-green">2000s</h3>
+<p class="text-sm text-gray-600 mt-2">
+Modernized banking systems and improved services.
+</p>
+</div>
+</div>
+
+<div class="w-10 h-10 bg-brand-green rounded-full border-4 border-white z-10"></div>
+
+<div class="w-[45%]"></div>
+
+</div>
+
+<!-- ITEM 4 -->
+<div class="relative flex items-center justify-between">
+
+<div class="w-[45%]"></div>
+
+<div class="w-10 h-10 bg-brand-green rounded-full border-4 border-white z-10"></div>
+
+<div class="w-[45%] text-left">
+<div class="bg-gray-50 p-6 rounded-2xl shadow float-card">
+<h3 class="font-bold text-brand-green">Present</h3>
+<p class="text-sm text-gray-600 mt-2">
+Continuing to empower communities through financial solutions.
+</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<!-- MISSION -->
+<section id="mission" class="py-28 px-6 bg-gradient-to-br from-green-900 to-green-700 text-white text-center relative overflow-hidden">
+
+<!-- background glow -->
+<div class="absolute -top-20 -left-20 w-72 h-72 bg-yellow-400 opacity-20 rounded-full blur-3xl pointer-events-none"></div>
+
+<div class="max-w-4xl mx-auto relative z-10">
+
+<h2 class="text-4xl md:text-5xl font-black mb-6">
+Our Mission
+</h2>
+
+<p class="text-lg md:text-xl opacity-90 mb-10">
+To uplift lives by providing accessible, reliable, and community-driven financial services.
+</p>
+
+<div class="grid md:grid-cols-2 gap-6 text-left">
+
+<div class="bg-white/10 p-6 rounded-2xl backdrop-blur-md float-card">
+✔ Improve livelihood of residents
+</div>
+
+<div class="bg-white/10 p-6 rounded-2xl backdrop-blur-md float-card">
+✔ Enhance services through partnerships
+</div>
+
+<div class="bg-white/10 p-6 rounded-2xl backdrop-blur-md float-card">
+✔ Provide better compensation
+</div>
+
+<div class="bg-white/10 p-6 rounded-2xl backdrop-blur-md float-card">
+✔ Support community development
+</div>
+
+</div>
+</div>
+</section>
+<!-- VISION -->
+<section id="vision" class="py-28 px-6 bg-white text-center relative overflow-hidden">
+
+<!-- subtle glow -->
+<div class="absolute -bottom-20 -right-20 w-72 h-72 bg-green-700 opacity-10 rounded-full blur-3xl"></div>
+
+<div class="max-w-4xl mx-auto relative z-10">
+
+<h2 class="text-4xl md:text-5xl font-black text-brand-green mb-6">
+Our Vision
+</h2>
+
+<p class="text-lg md:text-xl text-gray-700 leading-relaxed mb-10">
+To be a leading financial institution that delivers fast, reliable, and innovative 
+services that empower communities and support sustainable growth.
+</p>
+
+<div class="bg-gray-50 p-8 rounded-3xl shadow-lg float-card">
+<p class="text-gray-600 italic">
+"Empowering communities through trusted financial solutions."
+</p>
+</div>
+
+</div>
+</section>
+
+<script>
+const images = ["1112.jpg","1116.png"];
+let currentIndex = 0;
+
+function showImage(i){
+    const img = document.getElementById("slider-image");
+    img.style.opacity = 0;
+    setTimeout(() => {
+        img.src = images[i];
+        img.onload = () => img.style.opacity = 1;
+    }, 500);
+}
+
+function nextImage(){ currentIndex=(currentIndex+1)%images.length; showImage(currentIndex);}
+function prevImage(){ currentIndex=(currentIndex-1+images.length)%images.length; showImage(currentIndex);}
+
+setInterval(nextImage,5000);
+</script>
+
+<footer class="relative bg-brand-green text-white pt-20 pb-10 overflow-hidden">
+
+<!-- 🌟 BACKGROUND GLOW -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-green-400 opacity-10 blur-3xl rounded-full"></div>
+
+<div class="relative max-w-6xl mx-auto px-6">
+
+    <!-- ✨ GLASS CONTAINER -->
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/10">
+
+        <!-- GRID -->
+        <div class="grid md:grid-cols-4 gap-10 text-left">
+
+            <!-- 🏦 BRAND -->
+           <div class="footer-fade">
+                <h3 class="text-xl font-bold text-brand-yellow mb-4">
+                    Rural Bank of San Rafael
+                </h3>
+                <p class="text-gray-200 text-sm leading-relaxed">
+                    Empowering communities through trusted financial services since 1967.
+                </p>
+            </div>
+
+            <!-- 🔗 LINKS -->
+           <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-white">
+    <li><a href="index.html#home" class="text-white hover:text-brand-yellow">Home</a></li>
+    <li><a href="about.html" class="text-white hover:text-brand-yellow">About</a></li>
+    <li><a href="services.html" class="text-white hover:text-brand-yellow">Services</a></li>
+    <li><a href="contact.html" class="text-white hover:text-brand-yellow">Contact</a></li>
+</ul>
+            </div>
+
+            <!-- 💼 SERVICES -->
+            <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Services</h4>
+              <ul class="space-y-2 text-sm text-white">
+    <li>
+        <a href="services.html#savings" class="text-white hover:text-brand-yellow">
+            Savings Account
+        </a>
+    </li>
+    <li>
+        <a href="services.html#checking" class="text-white hover:text-brand-yellow">
+            Checking Account
+        </a>
+    </li>
+    <li>
+        <a href="services.html#loans" class="text-white hover:text-brand-yellow">
+            Salary Loan
+        </a>
+    </li>
+    <li>
+        <a href="services.html#loans" class="text-white hover:text-brand-yellow">
+            Agricultural Loan
+        </a>
+    </li>
+</ul>
+            </div>
+
+            <!-- 📞 CONTACT -->
+            <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Contact</h4>
+                <ul class="space-y-2 text-sm text-white">
+<li>
+    <a href="https://maps.app.goo.gl/6GA9aLSC1aqEKkA59" 
+       target="_blank"
+       class="text-white hover:text-brand-yellow">
+        📍 San Rafael, Bulacan
+    </a>
+</li>
+<li>
+    <a href="tel:09123456789" class="text-white hover:text-brand-yellow">
+        📞 0932-848-6876
+    </a>
+</li>
+<li>
+    <a href="mailto:rbsanrafael@yahoo.com" class="text-white hover:text-brand-yellow">
+        📧 rbsanrafael@yahoo.com
+    </a>
+</li>
+<li>🕒 Mon - Fri: 8AM - 5PM</li>
+</ul>
+            </div>
+
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="border-t border-white/20 my-8"></div>
+
+        <!-- BOTTOM -->
+        <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+
+            <p>
+                © 2026 Rural Bank of San Rafael. All rights reserved.
+            </p>
+
+            <!-- SOCIALS -->
+
+<div class="flex space-x-4 mt-4 md:mt-0">
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Facebook
+    </a>
+
+    <a href="mailto:rbsanrafael@yahoo.com" 
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Email
+    </a>
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Messenger
+    </a>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+</footer>
+<script src="auth.js"></script>
+</body>
+</html>

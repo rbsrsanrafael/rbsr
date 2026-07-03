@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers - Rural Bank of San Rafael (Bulacan) Inc.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Merriweather', serif;
+        }
+        .section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 5rem; 
+            padding-bottom: 2rem;
+        }
+        .bg-brand-green { background-color: #004d00; }
+        .bg-brand-green-light { background-color: #006400; }
+        .text-brand-green { color: #004d00; }
+        .text-brand-yellow { color: #f2c700; }
+        .hover\:text-brand-yellow:hover { color: #f2c700; }
+        .bg-brand-yellow { background-color: #f2c700; }
+        .hover\:bg-brand-yellow-dark:hover { background-color: #e6b800; }
+        .border-brand-yellow { border-color: #f2c700; }
+        .card-glow:hover {
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .float-card {
+            transition: all 0.35s ease;
+        }
+        .float-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+        .hero-overlay {
+            background: rgba(0,0,0,0.6);
+        }
+        .fade-up {
+            animation: fadeUp 0.8s ease forwards;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .footer-fade {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUpFooter 0.8s ease forwards;
+        }
+        @keyframes fadeUpFooter {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-brand-green text-white">
+
+    <header class="bg-brand-green bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html#home" class="flex items-center text-lg md:text-xl font-bold text-brand-yellow">
+                <img src="277570418_377604507712528_8014509792721781536_n.jpg" alt="Bank Logo" class="h-8 w-8 md:h-10 md:w-10 mr-3 rounded-md flex-shrink-0">
+                <span>Rural Bank of San Rafael (Bulacan) Inc.</span>
+            </a>
+            <nav class="hidden md:flex space-x-6 text-white items-center">
+                <a href="index.html#home" class="hover:text-brand-yellow">Home</a>
+                <a href="about.html" class="hover:text-brand-yellow">About</a>
+
+                <!-- SERVICES DROPDOWN -->
+                <div class="relative group">
+                    <button class="hover:text-brand-yellow focus:outline-none">
+                        Services ▾
+                    </button>
+
+                    <div class="absolute left-0 mt-2 pt-2 w-52 bg-white text-black rounded-md shadow-lg 
+                        opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                        transition-all duration-200">
+
+                        <a href="services.html#savings" 
+                        class="block px-4 py-2 hover:bg-gray-100">
+                        Savings & Deposits
+                        </a>
+
+                        <a href="services.html#loans" 
+                        class="block px-4 py-2 hover:bg-gray-100">
+                        Loan Services
+                        </a>
+
+                        <a href="real-and-other-properties-acquired.html" 
+                        class="block px-4 py-2 hover:bg-gray-100">
+                        Real & Other Properties
+                        </a>
+
+                    </div>
+                </div>
+
+                <a href="careers.html" class="hover:text-brand-yellow font-bold text-brand-yellow">Careers</a>
+                <a href="contact.html" class="hover:text-brand-yellow">Contact</a>
+                <a href="login.html" class="hover:text-brand-yellow" data-auth-link>Login</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-gray-200 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4 space-y-2">
+            <a href="index.html#home" class="block py-2 text-gray-200 hover:text-brand-yellow">Home</a>
+            <a href="about.html" class="block py-2 text-gray-200 hover:text-brand-yellow">About</a>
+
+            <a href="services.html#savings" class="block py-2 text-gray-200 hover:text-brand-yellow">
+            Savings & Deposits
+            </a>
+
+            <a href="services.html#loans" class="block py-2 text-gray-200 hover:text-brand-yellow">
+            Loan Services
+            </a>
+
+            <a href="careers.html" class="block py-2 text-brand-yellow hover:text-brand-yellow font-bold">
+            Careers
+            </a>
+
+            <a href="contact.html" class="block py-2 text-gray-200 hover:text-brand-yellow">
+            Contact
+            </a>
+            <a href="login.html" class="block py-2 text-gray-200 hover:text-brand-yellow" data-auth-link>
+            Login
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <section class="section bg-cover bg-center relative" style="background-image: url('FRONT\ RBSR.png');">
+            <!-- 🔥 OVERLAY -->
+            <div class="absolute inset-0 hero-overlay"></div>
+            
+            <!-- ✨ FLOATING GLASS CARD -->
+            <div class="relative bg-white/90 backdrop-blur-xl p-10 md:p-14 rounded-3xl shadow-2xl max-w-5xl mx-4 fade-up">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-black mb-4 leading-tight text-brand-green">
+                        Join Our Team
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+                        Build your career with Rural Bank of San Rafael - where your talent meets opportunity.
+                    </p>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-brand-green">Available Positions</h2>
+                        </div>
+                        <div id="career-auth-status" class="text-sm text-gray-600"></div>
+                    </div>
+
+                    <form id="career-form" class="hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 id="career-form-title" class="text-lg font-bold text-brand-green">Add a Career Opportunity</h3>
+                            <button id="cancel-career-edit" type="button" class="hidden rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-100">Cancel Edit</button>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="career-title">Position Title</label>
+                            <input id="career-title" type="text" required class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="e.g. Loan Officer">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="career-description">Short Description</label>
+                            <textarea id="career-description" rows="3" required class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Describe the role and what it offers."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="career-requirements">Requirements / What to Offer</label>
+                            <textarea id="career-requirements" rows="4" required class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Add one item per line"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2" for="career-email">Application Email</label>
+                            <input id="career-email" type="email" required class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="you@example.com">
+                        </div>
+
+                        <button type="submit" class="rounded-xl bg-brand-green px-5 py-3 font-bold text-white hover:bg-green-800 transition">
+                            Add Opportunity
+                        </button>
+                    </form>
+
+                    <div id="career-list" class="grid md:grid-cols-2 gap-8"></div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="relative bg-brand-green text-white pt-20 pb-10 overflow-hidden">
+
+        <!-- 🌟 BACKGROUND GLOW -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-green-400 opacity-10 blur-3xl rounded-full"></div>
+
+        <div class="relative max-w-6xl mx-auto px-6">
+
+            <!-- ✨ GLASS CONTAINER -->
+            <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/10">
+
+                <!-- GRID -->
+                <div class="grid md:grid-cols-4 gap-10 text-left">
+
+                    <!-- 🏦 BRAND -->
+                   <div class="footer-fade">
+                        <h3 class="text-xl font-bold text-brand-yellow mb-4">
+                            Rural Bank of San Rafael
+                        </h3>
+                        <p class="text-gray-200 text-sm leading-relaxed">
+                            Empowering communities through trusted financial services since 1967.
+                        </p>
+                    </div>
+
+                    <!-- 🔗 LINKS -->
+                   <div class="footer-fade">
+                        <h4 class="font-bold text-brand-yellow mb-4">Quick Links</h4>
+                        <ul class="space-y-2 text-sm text-gray-200">
+                            <li><a href="index.html#home" class="hover:text-brand-yellow transition">Home</a></li>
+                            <li><a href="about.html" class="hover:text-brand-yellow transition">About</a></li>
+                            <li><a href="services.html" class="hover:text-brand-yellow transition">Services</a></li>
+                            <li><a href="careers.html" class="hover:text-brand-yellow transition">Careers</a></li>
+                            <li><a href="contact.html" class="hover:text-brand-yellow transition">Contact</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- 💼 SERVICES -->
+                    <div class="footer-fade">
+                        <h4 class="font-bold text-brand-yellow mb-4">Services</h4>
+                       <ul class="space-y-2 text-sm text-gray-200">
+                <li>
+                    <a href="services.html#savings" class="hover:text-brand-yellow transition">
+                        Savings Account
+                    </a>
+                </li>
+                <li>
+                    <a href="services.html#checking" class="hover:text-brand-yellow transition">
+                        Checking Account
+                    </a>
+                </li>
+                <li>
+                    <a href="services.html#loans" class="hover:text-brand-yellow transition">
+                        Salary Loan
+                    </a>
+                </li>
+                <li>
+                    <a href="services.html#loans" class="hover:text-brand-yellow transition">
+                        Agricultural Loan
+                    </a>
+                </li>
+            </ul>
+                    </div>
+
+                    <!-- 📞 CONTACT -->
+                    <div class="footer-fade">
+                        <h4 class="font-bold text-brand-yellow mb-4">Contact</h4>
+                        <ul class="space-y-2 text-sm text-gray-200">
+<li>
+    <a href="https://maps.app.goo.gl/6GA9aLSC1aqEKkA59" 
+       target="_blank"
+       class="hover:text-brand-yellow transition">
+        📍 San Rafael, Bulacan
+    </a>
+</li>
+<li>
+    <a href="tel:09123456789" class="hover:text-brand-yellow transition">
+        📞 0932-848-6876
+    </a>
+</li>
+<li>
+    <a href="mailto:rbsanrafael@yahoo.com" class="hover:text-brand-yellow transition">
+        📧 rbsanrafael@yahoo.com
+    </a>
+</li>
+                            <li>🕒 Mon - Fri: 8AM - 5PM</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <!-- DIVIDER -->
+                <div class="border-t border-white/20 my-8"></div>
+
+                <!-- BOTTOM -->
+                <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+
+                    <p>
+                        © 2026 Rural Bank of San Rafael. All rights reserved.
+                    </p>
+
+                    <!-- SOCIALS -->
+
+<div class="flex space-x-4 mt-4 md:mt-0">
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Facebook
+    </a>
+
+    <a href="mailto:rbsanrafael@yahoo.com" 
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Email
+    </a>
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Messenger
+    </a>
+
+</div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </footer>
+
+<script src="auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+    const CAREER_STORAGE_KEY = 'rbsrCareers';
+    const firebaseConfig = {
+        apiKey: 'AIzaSyAkklqdQbgrGu1R3q7fEPIix9xLi2Jf91A',
+        authDomain: 'rbsrwebsite.firebaseapp.com',
+        projectId: 'rbsrwebsite',
+        storageBucket: 'rbsrwebsite.firebasestorage.app',
+        messagingSenderId: '822443202897',
+        appId: '1:822443202897:web:e26e292f448ae146c19b70',
+        measurementId: 'G-D2SWYRQ9YC'
+    };
+    let editingCareerId = null;
+    let careersCache = [];
+    let careersLoaded = false;
+    let db = null;
+    let firestoreEnabled = false;
+
+        function isLoggedIn() {
+            return localStorage.getItem('rbsrAuth') === 'true';
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getDefaultCareers() {
+            return [];
+        }
+
+        function isSampleCareer(career) {
+            const sampleIds = ['default-loan-officer', 'default-csr', 'default-teller', 'default-it'];
+            const sampleTitles = ['Loan Officer', 'Customer Service Representative', 'Teller', 'IT Support Specialist'];
+
+            return sampleIds.includes(career && career.id) || sampleTitles.includes(career && career.title);
+        }
+
+        function getLegacyCareers() {
+            try {
+                const saved = localStorage.getItem(CAREER_STORAGE_KEY);
+                const parsed = saved ? JSON.parse(saved) : [];
+
+                if (!Array.isArray(parsed)) {
+                    return [];
+                }
+
+                return parsed.filter(function (career) {
+                    return !isSampleCareer(career);
+                });
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function getCareers() {
+            return careersCache;
+        }
+
+        function initializeFirebase() {
+            if (!window.firebase || !window.firebase.apps || !window.firebase.apps.length) {
+                window.firebase.initializeApp(firebaseConfig);
+            }
+            db = window.firebase.firestore();
+            firestoreEnabled = true;
+            return true;
+        }
+
+        function loadCareersFromLocalStorage() {
+            careersCache = getLegacyCareers();
+            if (!careersCache.length) {
+                careersCache = getDefaultCareers();
+                localStorage.setItem(CAREER_STORAGE_KEY, JSON.stringify(careersCache));
+            }
+            careersLoaded = true;
+        }
+
+        function subscribeToCareers() {
+            if (!firestoreEnabled || !db) return;
+
+            db.collection('careers').orderBy('createdAt', 'desc').onSnapshot(function (snapshot) {
+                careersCache = snapshot.docs.map(function (doc) {
+                    return { id: doc.id, ...doc.data() };
+                });
+                careersLoaded = true;
+                renderCareers();
+            }, function (error) {
+                console.error('Firestore load failed:', error);
+                loadCareersFromLocalStorage();
+                renderCareers();
+            });
+        }
+
+        async function saveCareers(careers) {
+            const payload = Array.isArray(careers) ? careers : [];
+            careersCache = payload;
+
+            if (firestoreEnabled && db) {
+                const careersRef = db.collection('careers');
+                const batch = db.batch();
+                const snapshot = await careersRef.get();
+
+                snapshot.docs.forEach(function (doc) {
+                    batch.delete(doc.ref);
+                });
+
+                payload.forEach(function (career) {
+                    const data = { ...career };
+                    if (!data.createdAt) {
+                        data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                    }
+                    data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                    batch.set(careersRef.doc(career.id), data);
+                });
+
+                await batch.commit();
+            }
+
+            localStorage.setItem(CAREER_STORAGE_KEY, JSON.stringify(payload));
+            return payload;
+        }
+
+        async function initializeCareerStore() {
+            if (careersLoaded) {
+                return getCareers();
+            }
+
+            initializeFirebase();
+            subscribeToCareers();
+
+            const legacyCareers = getLegacyCareers();
+            if (legacyCareers.length) {
+                await saveCareers(legacyCareers);
+            } else {
+                loadCareersFromLocalStorage();
+            }
+
+            return getCareers();
+        }
+
+        function resetCareerForm() {
+            const form = document.getElementById('career-form');
+            const formTitle = document.getElementById('career-form-title');
+            const cancelButton = document.getElementById('cancel-career-edit');
+            const submitButton = form ? form.querySelector('button[type="submit"]') : null;
+
+            if (form) {
+                form.reset();
+            }
+            if (formTitle) {
+                formTitle.textContent = 'Add a Career Opportunity';
+            }
+            if (cancelButton) {
+                cancelButton.classList.add('hidden');
+            }
+            if (submitButton) {
+                submitButton.textContent = 'Add Opportunity';
+            }
+            editingCareerId = null;
+        }
+
+        async function renderCareers() {
+            const list = document.getElementById('career-list');
+            const form = document.getElementById('career-form');
+            const status = document.getElementById('career-auth-status');
+
+            if (!list || !form || !status) return;
+
+            await initializeCareerStore();
+            const careers = getCareers();
+            const canManage = window.rbsrAuth && window.rbsrAuth.hasPermission && window.rbsrAuth.hasPermission('careers');
+
+            if (isLoggedIn() && canManage) {
+                form.classList.remove('hidden');
+                status.innerHTML = '<span class="font-semibold text-brand-green">Editing enabled · shared with other users</span>';
+            } else {
+                form.classList.add('hidden');
+                status.textContent = isLoggedIn() ? 'You do not have access to manage careers.' : '';
+            }
+
+            if (!careers.length) {
+                list.innerHTML = '<div class="md:col-span-2 rounded-2xl border border-dashed border-gray-300 p-8 text-center text-gray-500">No opportunities yet. Sign in and add your first listing.</div>';
+                return;
+            }
+
+            list.innerHTML = careers.map(function (career) {
+                const requirements = Array.isArray(career.requirements)
+                    ? career.requirements
+                    : String(career.requirements || '').split(/\n+/).filter(Boolean);
+
+                const requirementMarkup = requirements.map(function (item) {
+                    return '<li>✓ ' + escapeHtml(item) + '</li>';
+                }).join('');
+                const canManage = window.rbsrAuth && window.rbsrAuth.hasPermission && window.rbsrAuth.hasPermission('careers');
+
+                return '<div class="card-glow float-card bg-brand-yellow rounded-2xl p-6 shadow-lg transition duration-300 hover:scale-105">' +
+                    '<h3 class="text-2xl font-bold text-brand-green mb-4">' + escapeHtml(career.title) + '</h3>' +
+                    '<p class="mb-4 text-gray-700">' + escapeHtml(career.description) + '</p>' +
+                    '<ul class="mb-6 text-gray-700 space-y-2 text-sm">' + requirementMarkup + '</ul>' +
+                    '<div class="bg-white/90 text-brand-green rounded-2xl p-4">' +
+                    '<p class="font-semibold mb-2">Email your resume to:</p>' +
+                    '<a href="mailto:' + encodeURIComponent(career.email || 'rbsanrafael@yahoo.com') + '?subject=Job%20Application%20-' + encodeURIComponent(career.title) + '" class="block text-brand-yellow font-bold underline hover:text-brand-green-dark">' + escapeHtml(career.email || 'rbsanrafael@yahoo.com') + '</a>' +
+                    (isLoggedIn() && canManage ? '<div class="mt-4 flex flex-wrap gap-2">' +
+                    '<button type="button" class="edit-career rounded-lg bg-green-800 px-3 py-2 text-sm font-semibold text-white" data-id="' + career.id + '">Edit</button>' +
+                    '<button type="button" class="delete-career rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white" data-id="' + career.id + '">Delete</button>' +
+                    '</div>' : '') +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('career-form');
+            const list = document.getElementById('career-list');
+            const cancelButton = document.getElementById('cancel-career-edit');
+
+            renderCareers();
+
+            if (cancelButton) {
+                cancelButton.addEventListener('click', function () {
+                    resetCareerForm();
+                });
+            }
+
+            if (list) {
+                list.addEventListener('click', async function (event) {
+                    const editButton = event.target.closest('.edit-career');
+                    const deleteButton = event.target.closest('.delete-career');
+                    const careers = getCareers();
+
+                    if (editButton) {
+                        const career = careers.find(function (item) {
+                            return item.id === editButton.getAttribute('data-id');
+                        });
+
+                        if (career) {
+                            document.getElementById('career-title').value = career.title;
+                            document.getElementById('career-description').value = career.description;
+                            document.getElementById('career-requirements').value = Array.isArray(career.requirements) ? career.requirements.join('\n') : String(career.requirements || '');
+                            document.getElementById('career-email').value = career.email || '';
+                            document.getElementById('career-form-title').textContent = 'Edit Opportunity';
+                            document.getElementById('cancel-career-edit').classList.remove('hidden');
+                            document.querySelector('#career-form button[type="submit"]').textContent = 'Update Opportunity';
+                            editingCareerId = career.id;
+                            document.getElementById('career-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+
+                    if (deleteButton) {
+                        const careerId = deleteButton.getAttribute('data-id');
+                        const updatedCareers = careers.filter(function (item) {
+                            return item.id !== careerId;
+                        });
+                        await saveCareers(updatedCareers);
+                        await renderCareers();
+                    }
+                });
+            }
+
+            if (form) {
+                form.addEventListener('submit', async function (event) {
+                    event.preventDefault();
+
+                    const title = document.getElementById('career-title').value.trim();
+                    const description = document.getElementById('career-description').value.trim();
+                    const requirementsText = document.getElementById('career-requirements').value.trim();
+                    const email = document.getElementById('career-email').value.trim();
+
+                    if (!title || !description || !requirementsText || !email) {
+                        return;
+                    }
+
+                    const requirements = requirementsText.split(/\n+/).map(function (item) {
+                        return item.trim();
+                    }).filter(Boolean);
+                    const careers = getCareers();
+
+                    if (editingCareerId) {
+                        const updatedCareers = careers.map(function (career) {
+                            if (career.id === editingCareerId) {
+                                return {
+                                    ...career,
+                                    title: title,
+                                    description: description,
+                                    requirements: requirements,
+                                    email: email
+                                };
+                            }
+                            return career;
+                        });
+                        await saveCareers(updatedCareers);
+                    } else {
+                        careers.unshift({
+                            id: Date.now().toString(),
+                            title: title,
+                            description: description,
+                            requirements: requirements,
+                            email: email
+                        });
+                        await saveCareers(careers);
+                    }
+
+                    resetCareerForm();
+                    await renderCareers();
+                });
+            }
+        });
+    </script>
+</html>

@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rural Bank of San Rafael (Bulacan) Inc.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        
+        body {
+            font-family: 'Merriweather', serif;
+        }
+        .section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 5rem; 
+            padding-bottom: 2rem;
+        }
+
+        .bg-brand-green { background-color: #004d00; }
+        .bg-brand-green-light { background-color: #006400; }
+        .text-brand-green { color: #004d00; }
+        .text-brand-yellow { color: #f2c700; }
+        .hover\:text-brand-yellow:hover { color: #f2c700; }
+        .bg-brand-yellow { background-color: #f2c700; }
+        .hover\:bg-brand-yellow-dark:hover { background-color: #e6b800; }
+        .border-brand-yellow { border-color: #f2c700; }
+        .branch-location.active {
+            background-color: #f9fafb;
+            border-left-width: 4px;
+            border-color: #f2c700;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .hero-overlay {
+    background: rgba(0,0,0,0.6);
+}
+
+.fade-up {
+    animation: fadeUp 0.8s ease forwards;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-glow:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.float-card {
+    transition: all 0.35s ease;
+}
+.float-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+
+    
+}
+.group:hover {
+    transform: translateY(-8px);
+}
+
+#slides {
+    display: flex;
+    transition: transform 0.7s ease-in-out;
+}
+
+img {
+    transition: transform 0.5s ease;
+}
+
+.footer-fade {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUpFooter 0.8s ease forwards;
+}
+
+.fade-up:nth-child(1) { animation-delay: 0.2s; }
+.fade-up:nth-child(2) { animation-delay: 0.4s; }
+.fade-up:nth-child(3) { animation-delay: 0.6s; }
+.fade-up:nth-child(4) { animation-delay: 0.8s; }
+
+@keyframes fadeUpFooter {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+    </style>
+</head>
+<body class="bg-brand-green text-white">
+
+    <header class="bg-brand-green bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="flex items-center text-lg md:text-xl font-bold text-brand-yellow">
+                <img src="277570418_377604507712528_8014509792721781536_n.jpg" alt="Bank Logo" class="h-8 w-8 md:h-10 md:w-10 mr-3 rounded-md flex-shrink-0">
+                <span>Rural Bank of San Rafael (Bulacan) Inc.</span>
+            </a>
+            <nav class="hidden md:flex space-x-6 text-white items-center">
+
+<a href="#home" class="hover:text-brand-yellow">Home</a>
+<a href="about.html" class="hover:text-brand-yellow">About</a>
+
+<!-- SERVICES DROPDOWN -->
+<div class="relative group">
+    
+    <button class="hover:text-brand-yellow focus:outline-none">
+        Services ▾
+    </button>
+
+    <div class="absolute left-0 mt-2 pt-2 w-52 bg-white text-black rounded-md shadow-lg 
+        opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+        transition-all duration-200">
+
+        <a href="services.html#savings" 
+        class="block px-4 py-2 hover:bg-gray-100">
+        Savings & Deposits
+        </a>
+
+        <a href="services.html#loans" 
+        class="block px-4 py-2 hover:bg-gray-100">
+        Loan Services
+        </a>
+
+        <a href="real-and-other-properties-acquired.html" 
+        class="block px-4 py-2 hover:bg-gray-100">
+        Real & Other Properties
+        </a>
+
+    </div>
+
+</div>
+
+<a href="careers.html" class="hover:text-brand-yellow">Careers</a>
+
+<a href="contact.html" class="hover:text-brand-yellow">Contact</a>
+<a href="login.html" class="hover:text-brand-yellow" data-auth-link>Login</a>
+
+</nav>
+            <button id="mobile-menu-button" class="md:hidden text-gray-200 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4 space-y-2">
+
+            <a href="#home" class="block py-2 text-gray-200 hover:text-brand-yellow">Home</a>
+            <a href="about.html" class="block py-2 text-gray-200 hover:text-brand-yellow">About</a>
+
+            <a href="services.html#savings" class="block py-2 text-gray-200 hover:text-brand-yellow">
+            Savings & Deposits
+            </a>
+
+            <a href="services.html#loans" class="block py-2 text-gray-200 hover:text-brand-yellow">
+            Loan Services
+            </a>
+
+            <a href="real-and-other-properties-acquired.html" class="block py-2 text-gray-200 hover:text-brand-yellow">
+            Real & Other Properties
+            </a>
+
+            <a href="careers.html" class="block py-2 text-gray-200 hover:text-brand-yellow">
+            Careers
+            </a>
+
+            <a href="contact.html" class="block py-2 text-gray-200 hover:text-brand-yellow">
+            Contact
+            </a>
+
+            <a href="login.html" class="block py-2 text-gray-200 hover:text-brand-yellow" data-auth-link>
+            Login
+            </a>
+
+        </div>
+    </header>
+
+    <main>
+<section id="home" class="section bg-cover bg-center relative" 
+style="background-image: url('FRONT\ RBSR.png');">
+
+<!-- 🔥 MAS PREMIUM OVERLAY -->
+<div class="absolute inset-0 hero-overlay"></div>
+
+<!-- ✨ FLOATING GLASS CARD -->
+<div class="relative bg-white/90 backdrop-blur-xl p-10 md:p-14 rounded-3xl shadow-2xl max-w-5xl mx-4 fade-up">
+
+<!-- HEADER TEXT -->
+<div class="text-center mb-12">
+
+<h1 class="text-4xl sm:text-5xl md:text-6xl font-black mb-4 leading-tight text-brand-green">
+A Rural Bank Focused on People First
+</h1>
+
+
+<p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+Your trusted partner in achieving financial stability and growth, right here in our community.
+</p>
+
+</div>
+
+<!-- 🔥 CARDS -->
+<div class="grid md:grid-cols-3 gap-8">
+
+<!-- SERVICES -->
+<a href="services.html" 
+class="group card-glow float relative overflow-hidden bg-brand-yellow rounded-2xl p-6 shadow-lg transition duration-300 hover:scale-105">
+
+<div class="absolute inset-0 bg-brand-green opacity-0 group-hover:opacity-100 transition"></div>
+
+<div class="relative z-10 text-center">
+
+<div class="mb-3 flex justify-center">
+<svg xmlns="http://www.w3.org/2000/svg" 
+class="w-10 h-10 text-brand-green group-hover:text-white transition"
+fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+d="M20 13V7a2 2 0 00-2-2h-3V3H9v2H6a2 2 0 00-2 2v6m16 0H4m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/>
+</svg>
+</div>
+
+<h3 class="text-xl font-bold text-brand-green group-hover:text-white">
+Our Services
+</h3>
+
+<p class="text-sm mt-2 text-gray-700 group-hover:text-white">
+Explore what we offer
+</p>
+
+</div>
+
+</a>
+
+<!-- ABOUT -->
+<a href="about.html" 
+class="group card-glow float relative overflow-hidden bg-brand-yellow rounded-2xl p-6 shadow-lg transition duration-300 hover:scale-105">
+
+<div class="absolute inset-0 bg-brand-green opacity-0 group-hover:opacity-100 transition"></div>
+
+<div class="relative z-10 text-center">
+
+<div class="mb-3 flex justify-center">
+<svg xmlns="http://www.w3.org/2000/svg" 
+class="w-10 h-10 text-brand-green group-hover:text-white transition"
+fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+d="M3 21h18M5 21V7l7-4 7 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/>
+</svg>
+</div>
+
+<h3 class="text-xl font-bold text-brand-green group-hover:text-white">
+About Us
+</h3>
+
+<p class="text-sm mt-2 text-gray-700 group-hover:text-white">
+Know our story
+</p>
+
+</div>
+
+</a>
+
+<!-- CONTACT -->
+<a href="contact.html" 
+class="group card-glow float relative overflow-hidden bg-brand-yellow rounded-2xl p-6 shadow-lg transition duration-300 hover:scale-105">
+
+<div class="absolute inset-0 bg-brand-green opacity-0 group-hover:opacity-100 transition"></div>
+
+<div class="relative z-10 text-center">
+
+<div class="mb-3 flex justify-center">
+<svg xmlns="http://www.w3.org/2000/svg" 
+class="w-10 h-10 text-brand-green group-hover:text-white transition"
+fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+d="M3 5h18M3 10h18M3 15h18M3 20h18"/>
+</svg>
+</div>
+
+<h3 class="text-xl font-bold text-brand-green group-hover:text-white">
+Contact Us
+</h3>
+
+<p class="text-sm mt-2 text-gray-700 group-hover:text-white">
+Get in touch
+</p>
+
+</div>
+
+</a>
+
+</div>
+
+<div class="mt-10 flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+
+<div class="bg-gray-100 px-4 py-2 rounded-full">✔ Secure Transactions</div>
+<div class="bg-gray-100 px-4 py-2 rounded-full">✔ Trusted Since 1967</div>
+<div class="bg-gray-100 px-4 py-2 rounded-full">✔ Community Focused</div>
+
+</div>
+
+<!-- ✨ EXTRA TRUST LINE -->
+<div class="mt-12 text-center text-gray-600 text-sm">
+Trusted by the community of San Rafael since 1967
+</div>
+
+</div>
+</section>
+
+<section class="py-20 bg-white text-gray-800 text-center relative overflow-hidden">
+
+<!-- background glow -->
+<div class="absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-96 bg-green-200 opacity-20 rounded-full blur-3xl"></div>
+
+<div class="max-w-6xl mx-auto relative z-10">
+
+<h2 class="text-4xl font-black text-brand-green mb-4">
+Our Key Services
+</h2>
+
+<p class="text-gray-600 mb-12 max-w-2xl mx-auto">
+Flexible financial solutions designed to help you grow, save, and succeed.
+</p>
+
+<div class="grid md:grid-cols-3 gap-8">
+
+<!-- CARD 1 -->
+<div class="group bg-white p-8 rounded-3xl shadow-lg float-card border border-gray-100 relative overflow-hidden">
+
+<div class="text-4xl mb-4">💰</div>
+
+<h3 class="font-bold text-xl text-brand-green mb-2">
+Savings Account
+</h3>
+
+<p class="text-gray-600 text-sm mb-4">
+Secure your money and earn interest with flexible savings options.
+</p>
+
+<a href="services.html#savings" 
+class="text-sm font-bold text-brand-green group-hover:underline">
+Learn More →
+</a>
+
+</div>
+
+<!-- CARD 2 -->
+<div class="group bg-white p-8 rounded-3xl shadow-lg float-card border border-gray-100 relative overflow-hidden">
+
+<div class="text-4xl mb-4">🏦</div>
+
+<h3 class="font-bold text-xl text-brand-green mb-2">
+Loan Services
+</h3>
+
+<p class="text-gray-600 text-sm mb-4">
+Get fast approval for personal, business, and agricultural loans.
+</p>
+
+<a href="services.html#loans" 
+class="text-sm font-bold text-brand-green group-hover:underline">
+Learn More →
+</a>
+
+</div>
+
+<!-- CARD 3 -->
+<div class="group bg-white p-8 rounded-3xl shadow-lg float-card border border-gray-100 relative overflow-hidden">
+
+<div class="text-4xl mb-4">💳</div>
+
+<h3 class="font-bold text-xl text-brand-green mb-2">
+Checking Account
+</h3>
+
+<p class="text-gray-600 text-sm mb-4">
+Enjoy convenient and secure transactions anytime.
+</p>
+
+<a href="services.html#checking" 
+class="text-sm font-bold text-brand-green group-hover:underline">
+Learn More →
+</a>
+
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="bg-brand-green text-white py-16 text-center">
+<h2 class="text-3xl font-black mb-10">Why Choose Our Bank</h2>
+
+<div class="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+
+<div class="bg-white/10 p-6 rounded-2xl float-card">
+<h3 class="text-3xl text-yellow-400 mb-2">⚡</h3>
+<p class="font-bold">Fast Processing</p>
+<p class="text-sm text-gray-200">Quick approvals and efficient service.</p>
+</div>
+
+<div class="bg-white/10 p-6 rounded-2xl float-card">
+<h3 class="text-3xl text-yellow-400 mb-2">🔒</h3>
+<p class="font-bold">Secure Banking</p>
+<p class="text-sm text-gray-200">Your money and data are protected.</p>
+</div>
+
+<div class="bg-white/10 p-6 rounded-2xl float-card">
+<h3 class="text-3xl text-yellow-400 mb-2">🤝</h3>
+<p class="font-bold">Trusted Service</p>
+<p class="text-sm text-gray-200">Friendly and reliable staff support.</p>
+</div>
+
+<div class="bg-white/10 p-6 rounded-2xl float-card">
+<h3 class="text-3xl text-yellow-400 mb-2">🌱</h3>
+<p class="font-bold">Community Focus</p>
+<p class="text-sm text-gray-200">Helping local communities grow.</p>
+</div>
+
+</div>
+</section>
+
+<!-- 💸 SUCCESSFUL TRANSACTIONS SLIDER -->
+<section class="py-20 bg-white text-gray-800 text-center relative overflow-hidden">
+
+<div class="max-w-6xl mx-auto">
+
+<h2 class="text-4xl font-black text-brand-green mb-4">
+Successful Transactions
+</h2>
+
+<p class="text-gray-600 mb-12 max-w-2xl mx-auto">
+Real transactions completed successfully by our valued clients.
+</p>
+
+<!-- SLIDER -->
+<div class="relative">
+
+    <!-- Slides Container -->
+    <div id="transactionSlider" class="overflow-hidden relative rounded-3xl shadow-xl">
+
+        <div id="slides" class="flex transition-transform duration-700 ease-in-out">
+
+            <!-- Slide Template -->
+            <!-- Duplicate this block dynamically via JS -->
+
+        </div>
+
+    </div>
+
+    <!-- CONTROLS -->
+    <button onclick="prevSlide()" 
+    class="absolute left-0 top-1/2 -translate-y-1/2 bg-brand-green text-white px-4 py-2 rounded-full shadow hover:bg-green-800">
+    ❮
+    </button>
+
+    <button onclick="nextSlide()" 
+    class="absolute right-0 top-1/2 -translate-y-1/2 bg-brand-green text-white px-4 py-2 rounded-full shadow hover:bg-green-800">
+    ❯
+    </button>
+
+</div>
+
+</div>
+</section>
+
+<!-- 🔐 SECURITIPS SECTION -->
+<section class="bg-gradient-to-b from-white to-gray-100 py-20 px-4">
+
+<div class="max-w-6xl mx-auto">
+
+<!-- TITLE -->
+<div class="text-center mb-14">
+<h2 class="text-4xl font-black text-brand-green mb-3">
+⚠️ RBSR SECURITIPS
+</h2>
+<p class="text-gray-600">
+Stay safe from scams and protect your account
+</p>
+</div>
+
+<!-- GRID -->
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+<!-- CARD -->
+<div class="group bg-white p-6 rounded-2xl shadow-md 
+transform transition duration-300 ease-in-out
+hover:-translate-y-2 hover:shadow-2xl 
+hover:bg-brand-green hover:text-white 
+hover:border-2 hover:border-brand-yellow
+cursor-pointer">
+<h3 class="font-bold text-brand-green mb-2">Be Skeptical</h3>
+<p class="text-sm text-gray-600">
+Magduda agad sa kahina-hinalang mensahe o email.
+</p>
+
+</div>
+
+<!-- COPY THIS BLOCK FOR ALL -->
+<div class="group bg-white p-6 rounded-2xl shadow-md 
+transform transition duration-300 ease-in-out
+hover:-translate-y-2 hover:shadow-2xl 
+hover:bg-brand-green hover:text-white 
+hover:border-2 hover:border-brand-yellow
+cursor-pointer">
+<h3 class="font-bold text-brand-green mb-2">Verify Identity</h3>
+<p class="text-sm text-gray-600">
+Siguraduhing legit ang sender bago magbigay ng info.
+</p>
+</div>
+
+<div class="group bg-white p-6 rounded-2xl shadow-md 
+transform transition duration-300 ease-in-out
+hover:-translate-y-2 hover:shadow-2xl 
+hover:bg-brand-green hover:text-white 
+hover:border-2 hover:border-brand-yellow
+cursor-pointer">
+<h3 class="font-bold text-brand-green mb-2">Avoid Links</h3>
+<p class="text-sm text-gray-600">
+Huwag mag-click ng kahina-hinalang links.
+</p>
+</div>
+
+<div class="group bg-white p-6 rounded-2xl shadow-md 
+transform transition duration-300 ease-in-out
+hover:-translate-y-2 hover:shadow-2xl 
+hover:bg-brand-green hover:text-white 
+hover:border-2 hover:border-brand-yellow
+cursor-pointer">
+<h3 class="font-bold text-brand-green mb-2">Secure Connection</h3>
+<p class="text-sm text-gray-600">
+Check https at lock icon bago mag-login.
+</p>
+</div>
+
+<div class="group bg-white p-6 rounded-2xl shadow-md 
+transform transition duration-300 ease-in-out
+hover:-translate-y-2 hover:shadow-2xl 
+hover:bg-brand-green hover:text-white 
+hover:border-2 hover:border-brand-yellow
+cursor-pointer">
+<h3 class="font-bold text-brand-green mb-2">Protect Info</h3>
+<p class="text-sm text-gray-600">
+Huwag ibahagi ang OTP o password.
+</p>
+</div>
+
+<div class="group bg-white p-6 rounded-2xl shadow-md 
+transform transition duration-300 ease-in-out
+hover:-translate-y-2 hover:shadow-2xl 
+hover:bg-brand-green hover:text-white 
+hover:border-2 hover:border-brand-yellow
+cursor-pointer">
+<h3 class="font-bold text-brand-green mb-2">2FA Security</h3>
+<p class="text-sm text-gray-600">
+Gumamit ng extra protection tulad ng OTP.
+</p>
+</div>
+
+<div class="group bg-white p-6 rounded-2xl shadow-md 
+transform transition duration-300 ease-in-out
+hover:-translate-y-2 hover:shadow-2xl 
+hover:bg-brand-green hover:text-white 
+hover:border-2 hover:border-brand-yellow
+cursor-pointer">
+<h3 class="font-bold text-brand-green mb-2">Update System</h3>
+<p class="text-sm text-gray-600">
+Laging i-update ang device at apps.
+</p>
+</div>
+
+<div class="group bg-white p-6 rounded-2xl shadow-md 
+transform transition duration-300 ease-in-out
+hover:-translate-y-2 hover:shadow-2xl 
+hover:bg-brand-green hover:text-white 
+hover:border-2 hover:border-brand-yellow
+cursor-pointer">
+<h3 class="font-bold text-brand-green mb-2">Stay Informed</h3>
+<p class="text-sm text-gray-600">
+Alamin ang latest scam tactics.
+</p>
+</div>
+
+</div>
+
+<!-- 🔥 FEATURED WARNING -->
+<div class="mt-20 grid md:grid-cols-2 gap-10 items-center">
+
+<!-- TEXT -->
+<div>
+<h3 class="text-3xl font-bold text-brand-green mb-4">
+⚠️ What is Pharming?
+</h3>
+
+<p class="text-gray-700 leading-relaxed mb-4">
+Pharming is a cyber attack where hackers redirect users to a fake website that looks like a real banking site.
+</p>
+
+<p class="text-gray-700 leading-relaxed">
+They trick users into entering login details like username, password, or OTP.
+</p>
+
+<div class="mt-6 bg-red-100 text-red-700 p-4 rounded-lg text-sm font-semibold">
+⚠️ Always double-check the website URL before logging in.
+</div>
+</div>
+
+<!-- VISUAL SIDE -->
+<div class="bg-brand-green text-white p-8 rounded-2xl shadow-xl">
+
+<h4 class="text-xl font-bold mb-3">⚠️ Example Scenario</h4>
+
+<p class="text-sm leading-relaxed opacity-90">
+You click a link from a message → it opens a fake bank site → you enter your login → attackers steal your account.
+</p>
+
+<div class="mt-6 text-brand-yellow font-bold">
+Stay alert. Stay safe.
+</div>
+
+</div>
+
+</div>
+
+</div>
+</section>
+
+<section class="py-16 bg-gray-100 text-center">
+<h2 class="text-3xl font-black text-brand-green mb-10">
+What Our Clients Say
+</h2>
+
+<div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow float-card">
+<p class="italic text-gray-700">
+"Napakabilis ng serbisyo at very accommodating ang staff."
+</p>
+<h4 class="mt-4 font-bold text-brand-green">– Aira Cane Evangelista</h4>
+</div>
+</section>
+
+<section class="bg-brand-green text-white text-center py-20">
+<h2 class="text-3xl font-black mb-4">
+Start Banking With Us Today
+</h2>
+
+<p class="mb-6 text-gray-200">
+Open an account or apply for a loan in minutes.
+</p>
+
+<a href="contact.html" 
+class="bg-yellow-400 text-green-900 px-6 py-3 rounded-lg font-bold float-card">
+Get Started
+</a>
+</section>
+
+<script>
+
+const transactions = [
+    {
+        image: "JMS.png",
+        title: "Acquisition of 2nd unit 14footer Isuzu Closed Van",
+        description: `Congratulations to Mr. John Michael Santiago of San Pedro, Bustos, Bulacan on the acquisition of your 2nd unit 14footer Isuzu Closed Van 4JZ1 Series model 2025. 
+
+        Also, thank you to Mr. Gerry Eleazar of G.E. Motors Group Corp. for the smooth and fast transaction.
+
+        Thank you for always choosing and trusting Rural Bank of San Rafael as your business partner.`,
+        date: "August 11, 2025",
+    },
+    {
+        image: "Policarpio.png",
+        title: "Acquisition of Isuzu Mini Dumptruck",
+        description: `Congratulations to Mr. Policarpio and Mrs. Victoria Dela Cruz of Balaong, San Miguel, Bulacan on the acquisition of your Surplus Japan Isuzu Mini Dumptruck. 
+
+        Also, thank you to Autoland Subic Corp. for the smooth and fast transaction. 
+
+        Thank you for always choosing and trusting Rural Bank of San Rafael as your business partner.`,
+        date: "August 8, 2025",
+    },
+    {
+        image: "MAY.png",
+        title: "Acquisition of Isuzu Closed Van Truck",
+        description: `Congratulations to Mr. Melvin Andrew D.C Yanga of Bustos Bulacan, on the acquisition of your Isuzu Closed Van Truck
+
+        Also, thank you Sir John Mark Luigi C. Turla of Auto Mobilio Vehicle Trading Conception Baliwag for the smooth and fast transaction. 
+
+        Thank you for always choosing and trusting Rural Bank of San Rafael as your business partner.`,
+        date: "July 16, 2025",
+    },
+
+     {
+        image: "EPV.png",
+        title: "Acquisition of your Mitsubishi Closed Van Truck",
+        description: `Congratulations to Mr. Efraim P. Villanueva of Bustos Bulacan, on the acquisition of your Mitsubishi Closed Van Truck
+
+        Also, thank you Sir John Mark Luigi C. Turla of Auto Mobilio Vehicle Trading Conception Baliwag for the smooth and fast transaction. 
+
+        Thank you for always choosing and trusting Rural Bank of San Rafael as your business partner.`,
+        date: "July 16, 2025",
+    },
+
+      {
+        image: "DAP.png",
+        title: "Acquisition of your Mitsubishi Closed Van Truck",
+        description: `Congratulations to Mr. Dennis A. Perez of Bustos Bulacan, on the acquisition of your Mitsubishi Closed Van Truck
+
+        Also, thank you Sir John Mark Luigi C. Turla of Auto Mobilio Vehicle Trading Conception Baliwag for the smooth and fast transaction. 
+
+        Thank you for always choosing and trusting Rural Bank of San Rafael as your business partner.`,
+        date: "July 16, 2025",
+    },
+];
+
+const slidesContainer = document.getElementById("slides");
+const dotsContainer = document.createElement("div");
+
+dotsContainer.className = "flex justify-center mt-6 gap-2";
+slidesContainer.parentElement.appendChild(dotsContainer);
+
+// CREATE SLIDES
+transactions.forEach((t, i) => {
+    slidesContainer.innerHTML += `
+        <div class="min-w-full p-6">
+            <div class="bg-white rounded-3xl shadow-lg overflow-hidden md:flex items-center">
+
+                <div class="md:w-1/2 h-[300px] md:h-[400px] overflow-hidden">
+                    <img src="${t.image}" 
+                    class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                </div>
+
+                <div class="md:w-1/2 p-6 md:p-10 text-left">
+                    <h3 class="text-2xl font-bold text-brand-green mb-3">
+                        ${t.title}
+                    </h3>
+
+                    <p class="text-gray-600 mb-4 whitespace-pre-line">
+                        ${t.description}
+                    </p>
+
+                    <p class="text-sm text-gray-400">
+                        📅 ${t.date}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    `;
+
+    dotsContainer.innerHTML += `
+        <button onclick="goToSlide(${i})" 
+        class="w-3 h-3 rounded-full bg-gray-300"
+        id="dot-${i}">
+        </button>
+    `;
+});
+
+let index = 0;
+let interval;
+let isHovered = false;
+
+// UPDATE
+function updateSlide() {
+    slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+
+    document.querySelectorAll("[id^='dot-']").forEach((d, i) => {
+        d.classList.toggle("bg-brand-green", i === index);
+        d.classList.toggle("bg-gray-300", i !== index);
+    });
+}
+
+// CONTROLS
+function nextSlide() {
+    index = (index + 1) % transactions.length;
+    updateSlide();
+    resetAutoSlide();
+}
+
+function prevSlide() {
+    index = (index - 1 + transactions.length) % transactions.length;
+    updateSlide();
+    resetAutoSlide();
+}
+
+function goToSlide(i) {
+    index = i;
+    updateSlide();
+    resetAutoSlide();
+}
+
+// AUTO SLIDE
+function startAutoSlide() {
+    interval = setInterval(() => {
+        if (!isHovered) {
+            index = (index + 1) % transactions.length;
+            updateSlide();
+        }
+    }, 4000);
+}
+
+function resetAutoSlide() {
+    clearInterval(interval);
+    startAutoSlide();
+}
+
+// HOVER PAUSE
+slidesContainer.parentElement.addEventListener("mouseenter", () => {
+    isHovered = true;
+});
+
+slidesContainer.parentElement.addEventListener("mouseleave", () => {
+    isHovered = false;
+    resetAutoSlide(); // smoother restart
+});
+
+// INIT
+updateSlide();
+startAutoSlide();
+
+</script>
+
+
+
+<footer class="relative bg-brand-green text-white pt-20 pb-10 overflow-hidden">
+
+<!-- 🌟 BACKGROUND GLOW -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-green-400 opacity-10 blur-3xl rounded-full"></div>
+
+<div class="relative max-w-6xl mx-auto px-6">
+
+    <!-- ✨ GLASS CONTAINER -->
+    <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/10">
+
+        <!-- GRID -->
+        <div class="grid md:grid-cols-4 gap-10 text-left">
+
+            <!-- 🏦 BRAND -->
+           <div class="footer-fade">
+                <h3 class="text-xl font-bold text-brand-yellow mb-4">
+                    Rural Bank of San Rafael
+                </h3>
+                <p class="text-gray-200 text-sm leading-relaxed">
+                    Empowering communities through trusted financial services since 1967.
+                </p>
+            </div>
+
+            <!-- 🔗 LINKS -->
+           <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-white">
+    <li><a href="index.html#home" class="text-white hover:text-brand-yellow">Home</a></li>
+    <li><a href="about.html" class="text-white hover:text-brand-yellow">About</a></li>
+    <li><a href="services.html" class="text-white hover:text-brand-yellow">Services</a></li>
+    <li><a href="contact.html" class="text-white hover:text-brand-yellow">Contact</a></li>
+</ul>
+            </div>
+
+            <!-- 💼 SERVICES -->
+            <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Services</h4>
+               <ul class="space-y-2 text-sm text-white">
+    <li>
+        <a href="services.html#savings" class="text-white hover:text-brand-yellow">
+            Savings Account
+        </a>
+    </li>
+    <li>
+        <a href="services.html#checking" class="text-white hover:text-brand-yellow">
+            Checking Account
+        </a>
+    </li>
+    <li>
+        <a href="services.html#loans" class="text-white hover:text-brand-yellow">
+            Salary Loan
+        </a>
+    </li>
+    <li>
+        <a href="services.html#loans" class="text-white hover:text-brand-yellow">
+            Agricultural Loan
+        </a>
+    </li>
+</ul>
+            </div>
+
+            <!-- 📞 CONTACT -->
+            <div class="footer-fade">
+                <h4 class="font-bold text-brand-yellow mb-4">Contact</h4>
+               <ul class="space-y-2 text-sm text-white">
+<li>
+    <a href="https://maps.app.goo.gl/6GA9aLSC1aqEKkA59" 
+       target="_blank"
+       class="text-white hover:text-brand-yellow">
+        📍 San Rafael, Bulacan
+    </a>
+</li>
+<li>
+    <a href="tel:09123456789" class="text-white hover:text-brand-yellow">
+        📞 0932-848-6876
+    </a>
+</li>
+<li>
+    <a href="mailto:rbsanrafael@yahoo.com" class="text-white hover:text-brand-yellow">
+        📧 rbsanrafael@yahoo.com
+    </a>
+</li>
+<li>🕒 Mon - Fri: 8AM - 5PM</li>
+</ul>
+            </div>
+
+        </div>
+
+        <!-- DIVIDER -->
+        <div class="border-t border-white/20 my-8"></div>
+
+        <!-- BOTTOM -->
+        <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-300">
+
+            <p>
+                © 2026 Rural Bank of San Rafael. All rights reserved.
+            </p>
+
+            <!-- SOCIALS -->
+
+<div class="flex space-x-4 mt-4 md:mt-0">
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Facebook
+    </a>
+
+    <a href="mailto:rbsanrafael@yahoo.com" 
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Email
+    </a>
+
+    <a href="https://www.facebook.com/profile.php?id=100063889447290" target="_blank"
+    class="px-4 py-2 rounded-full bg-white/10 hover:bg-brand-yellow hover:text-green-900 transition">
+    Messenger
+    </a>
+
+</div>
+
+        </div>
+
+    </div>
+
+</div>
+</footer>
+<script src="auth.js"></script>
+</body>
+</html>
+
+

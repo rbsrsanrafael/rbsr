@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Rural Bank of San Rafael</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Merriweather', serif;
+        }
+        .bg-brand-green { background-color: #004d00; }
+        .text-brand-green { color: #004d00; }
+        .text-brand-yellow { color: #f2c700; }
+        .hover\:text-brand-yellow:hover { color: #f2c700; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<header class="bg-brand-green fixed top-0 left-0 right-0 shadow-lg z-50">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="index.html" class="flex items-center text-brand-yellow font-bold">
+            <img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-10 w-10 mr-2 rounded-md">
+            <span>Rural Bank of San Rafael</span>
+        </a>
+        <nav class="hidden md:flex space-x-6 text-white items-center">
+            <a href="index.html" class="hover:text-brand-yellow">Home</a>
+            <a href="about.html" class="hover:text-brand-yellow">About</a>
+            <a href="services.html" class="hover:text-brand-yellow">Services</a>
+            <a href="careers.html" class="hover:text-brand-yellow">Careers</a>
+            <a href="contact.html" class="hover:text-brand-yellow">Contact</a>
+            <a href="login.html" class="hover:text-brand-yellow" data-auth-link>Login</a>
+        </nav>
+    </div>
+</header>
+
+<main class="pt-28 pb-16 px-4">
+    <section class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div class="bg-brand-green px-8 py-12 text-white">
+                <h1 class="text-3xl md:text-4xl font-black mb-3">Welcome Back</h1>
+                <p class="text-green-100">Sign in to access your account and continue your banking experience.</p>
+            </div>
+            <div class="p-8 md:p-12">
+                <form id="login-form" class="space-y-6">
+                    <div>
+                        <label for="username" class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                        <input id="username" name="username" type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Enter username">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                        <input id="password" name="password" type="password" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="Enter password">
+                    </div>
+                    <p id="login-message" class="text-sm text-gray-600"></p>
+                    <button type="submit" class="w-full bg-brand-green text-white py-3 rounded-xl font-bold hover:bg-green-800 transition">Login</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-brand-green text-white py-8 text-center mt-12">
+    <p class="opacity-75">© 2026 Rural Bank of San Rafael. All Rights Reserved.</p>
+</footer>
+
+<script src="auth.js"></script>
+<script>
+    if (localStorage.getItem('rbsrAuth') === 'true') {
+        window.location.href = 'careers.html';
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const message = document.getElementById('login-message');
+
+        const user = await window.rbsrAuth.authenticateUser(username, password);
+
+        if (user) {
+            localStorage.setItem('rbsrAuth', 'true');
+            localStorage.setItem('rbsrUser', user.username);
+            localStorage.setItem('rbsrUserData', JSON.stringify(user));
+
+            if (user.role === 'admin' || (user.permissions || []).includes('admin')) {
+                window.location.href = 'admin.html';
+            } else if ((user.permissions || []).includes('careers') || user.role === 'careers') {
+                window.location.href = 'careers.html';
+            } else if ((user.permissions || []).includes('properties') || user.role === 'properties') {
+                window.location.href = 'real-and-other-properties-acquired.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        } else {
+            message.textContent = 'Invalid credentials. Please try again.';
+            message.className = 'text-sm text-red-600';
+        }
+    });
+</script>
+</body>
+</html>
