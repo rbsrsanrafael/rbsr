@@ -4,13 +4,13 @@
     const USER_DATA_KEY = 'rbsrUserData';
     const USERS_KEY = 'rbsrUsers';
     const firebaseConfig = {
-        apiKey: 'AIzaSyAkklqdQbgrGu1R3q7fEPIix9xLi2Jf91A',
-        authDomain: 'rbsrwebsite.firebaseapp.com',
-        projectId: 'rbsrwebsite',
-        storageBucket: 'rbsrwebsite.firebasestorage.app',
-        messagingSenderId: '822443202897',
-        appId: '1:822443202897:web:e26e292f448ae146c19b70',
-        measurementId: 'G-D2SWYRQ9YC'
+        apiKey: "AIzaSyAR5SxlCcOtytd9rzM6MwHnMZp5w",
+        authDomain: "rbsrwebsite-581e1.firebaseapp.com",
+        projectId: "rbsrwebsite-581e1",
+        storageBucket: "rbsrwebsite-581e1.firebasestorage.app",
+        messagingSenderId: "687230586943",
+        appId: "1:687230586943:web:aad94ada68a03ad105a88a",
+        measurementId: "G-LDDTRMFJ7B"
     };
     let firestoreDb = null;
 
