@@ -194,7 +194,6 @@ if (mobileButton && mobileMenu) {
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script>
     const PROPERTY_STORAGE_KEY = 'rbsrProperties';
     const placeholderImage = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="800" height="500" fill="#e5e7eb"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="28" fill="#6b7280">Property Image</text></svg>');
@@ -203,9 +202,7 @@ if (mobileButton && mobileMenu) {
     let propertiesLoaded = false;
     let unsubscribeFromProperties = null;
     let db = null;
-    let storage = null;
     let firestoreEnabled = false;
-    let storageEnabled = false;
 
     const firebaseConfig = {
     apiKey: "AIzaSyAR5SxlCcOtytd9rzM6MwHnMAYzXXMZp5w",
@@ -256,9 +253,6 @@ if (mobileButton && mobileMenu) {
 
             db = window.firebase.firestore();
             firestoreEnabled = true;
-
-            storage = window.firebase.storage();
-            storageEnabled = Boolean(storage);
             return true;
         } catch (error) {
             console.error('Firebase initialization failed:', error);
@@ -320,12 +314,6 @@ if (mobileButton && mobileMenu) {
             throw error;
         }
 
-        try {
-            localStorage.setItem(PROPERTY_STORAGE_KEY, JSON.stringify(payload));
-        } catch (error) {
-            console.error('Local storage save failed:', error);
-        }
-
         return payload;
     }
 
@@ -336,15 +324,10 @@ if (mobileButton && mobileMenu) {
 
         if (initializeFirebase()) {
             subscribeToProperties();
-            const legacyProperties = getLegacyProperties();
-            if (legacyProperties.length) {
-                await saveProperties(legacyProperties);
-            }
             return getProperties();
         }
 
-        loadPropertiesFromLocalStorage();
-        return getProperties();
+        throw new Error('Firebase is unavailable.');
     }
 
     function resetForm() {
@@ -482,26 +465,15 @@ if (mobileButton && mobileMenu) {
             return [];
         }
 
-        const uploadResults = await Promise.all(files.map(function (file, index) {
+        const uploadResults = await Promise.all(files.map(function (file) {
             if (!file || !file.type || !file.type.startsWith('image/')) {
                 return Promise.resolve('');
             }
 
-            if (!storageEnabled || !storage) {
-                return readImageAsDataUrl(file, 1200, 1200, 0.8);
-            }
-
-            const extension = (file.name && file.name.includes('.')) ? file.name.split('.').pop() : 'jpg';
-            const fileName = 'property-' + propertyId + '-' + Date.now() + '-' + index + '.' + extension;
-            const fileRef = storage.ref('properties/' + fileName);
-
-            return fileRef.put(file, { contentType: file.type })
-                .then(function (snapshot) {
-                    return snapshot.ref.getDownloadURL();
-                })
+            return readImageAsDataUrl(file, 1200, 1200, 0.8)
                 .catch(function (error) {
-                    console.error('Image upload failed, using local preview instead:', error);
-                    return readImageAsDataUrl(file, 1200, 1200, 0.8);
+                    console.error('Image conversion failed:', error);
+                    return '';
                 });
         }));
 
