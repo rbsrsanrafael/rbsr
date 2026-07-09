@@ -192,8 +192,42 @@ if (mobileButton && mobileMenu) {
     });
 }
 </script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getFirestore, collection, getDocs, onSnapshot, deleteDoc, doc, setDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBd9_xtl2tH4HMeuXZdjdLzMoPndnKh2s0",
+        authDomain: "rbsrwebsite-2b69e.firebaseapp.com",
+        projectId: "rbsrwebsite-2b69e",
+        storageBucket: "rbsrwebsite-2b69e.firebasestorage.app",
+        messagingSenderId: "1046190251402",
+        appId: "1:1046190251402:web:32356862d562f9024e3c73",
+        measurementId: "G-81D76QZ61L"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    window.rbsrFirebase = {
+        app,
+        analytics,
+        db,
+        firebaseConfig,
+        firestore: {
+            collection,
+            getDocs,
+            onSnapshot,
+            deleteDoc,
+            doc,
+            setDoc,
+            writeBatch,
+            serverTimestamp
+        }
+    };
+</script>
 <script>
     const PROPERTY_STORAGE_KEY = 'rbsrProperties';
     const placeholderImage = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="800" height="500" fill="#e5e7eb"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="28" fill="#6b7280">Property Image</text></svg>');
@@ -204,14 +238,14 @@ if (mobileButton && mobileMenu) {
     let db = null;
     let firestoreEnabled = false;
 
-    const firebaseConfig = {
-    apiKey: "AIzaSyAR5SxlCcOtytd9rzM6MwHnMAYzXXMZp5w",
-    authDomain: "rbsrwebsite-581e1.firebaseapp.com",
-    projectId: "rbsrwebsite-581e1",
-    storageBucket: "rbsrwebsite-581e1.firebasestorage.app",
-    messagingSenderId: "687230586943",
-    appId: "1:687230586943:web:aad94ada68a03ad105a88a",
-    measurementId: "G-LDDTRMFJ7B"
+    const firebaseConfig = window.rbsrFirebase?.firebaseConfig || {
+        apiKey: "AIzaSyBd9_xtl2tH4HMeuXZdjdLzMoPndnKh2s0",
+        authDomain: "rbsrwebsite-2b69e.firebaseapp.com",
+        projectId: "rbsrwebsite-2b69e",
+        storageBucket: "rbsrwebsite-2b69e.firebasestorage.app",
+        messagingSenderId: "1046190251402",
+        appId: "1:1046190251402:web:32356862d562f9024e3c73",
+        measurementId: "G-81D76QZ61L"
     };
 
     function isLoggedIn() {
@@ -241,19 +275,16 @@ if (mobileButton && mobileMenu) {
             return false;
         }
 
-        if (!window.firebase) {
-            console.error('Firebase SDK is not available.');
-            return false;
-        }
-
         try {
-            if (!window.firebase.apps || !window.firebase.apps.length) {
-                window.firebase.initializeApp(firebaseConfig);
+            const moduleFirebase = window.rbsrFirebase;
+            if (moduleFirebase && moduleFirebase.db) {
+                db = moduleFirebase.db;
+                firestoreEnabled = true;
+                return true;
             }
 
-            db = window.firebase.firestore();
-            firestoreEnabled = true;
-            return true;
+            console.error('Firebase SDK is not available.');
+            return false;
         } catch (error) {
             console.error('Firebase initialization failed:', error);
             return false;
@@ -268,9 +299,13 @@ if (mobileButton && mobileMenu) {
     function subscribeToProperties() {
         if (!firestoreEnabled || !db) return;
 
-        unsubscribeFromProperties = db.collection('properties').orderBy('createdAt', 'desc').onSnapshot(function (snapshot) {
-            propertiesCache = snapshot.docs.map(function (doc) {
-                return { id: doc.id, ...doc.data() };
+        const firestoreApi = window.rbsrFirebase && window.rbsrFirebase.firestore ? window.rbsrFirebase.firestore : null;
+        if (!firestoreApi) return;
+
+        const propertiesRef = firestoreApi.collection(db, 'properties');
+        unsubscribeFromProperties = firestoreApi.onSnapshot(propertiesRef, function (snapshot) {
+            propertiesCache = snapshot.docs.map(function (docSnap) {
+                return { id: docSnap.id, ...docSnap.data() };
             });
             propertiesLoaded = true;
             renderProperties();
@@ -290,22 +325,27 @@ if (mobileButton && mobileMenu) {
             throw new Error('Firebase is unavailable.');
         }
 
-        try {
-            const propertiesRef = db.collection('properties');
-            const batch = db.batch();
-            const snapshot = await propertiesRef.get();
+        const firestoreApi = window.rbsrFirebase && window.rbsrFirebase.firestore ? window.rbsrFirebase.firestore : null;
+        if (!firestoreApi) {
+            throw new Error('Firebase is unavailable.');
+        }
 
-            snapshot.docs.forEach(function (doc) {
-                batch.delete(doc.ref);
+        try {
+            const propertiesRef = firestoreApi.collection(db, 'properties');
+            const batch = firestoreApi.writeBatch(db);
+            const snapshot = await firestoreApi.getDocs(propertiesRef);
+
+            snapshot.docs.forEach(function (docSnap) {
+                batch.delete(firestoreApi.doc(db, 'properties', docSnap.id));
             });
 
             payload.forEach(function (property) {
                 const data = { ...property };
                 if (!data.createdAt) {
-                    data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                    data.createdAt = firestoreApi.serverTimestamp();
                 }
-                data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
-                batch.set(propertiesRef.doc(property.id), data);
+                data.updatedAt = firestoreApi.serverTimestamp();
+                batch.set(firestoreApi.doc(db, 'properties', property.id), data);
             });
 
             await batch.commit();
@@ -664,8 +704,8 @@ if (mobileButton && mobileMenu) {
                             location: location,
                             details: details,
                             images: uploadedImages,
-                            createdAt: firestoreEnabled && window.firebase && window.firebase.firestore
-                                ? window.firebase.firestore.FieldValue.serverTimestamp()
+                            createdAt: firestoreEnabled && window.rbsrFirebase && window.rbsrFirebase.firestore
+                                ? window.rbsrFirebase.firestore.serverTimestamp()
                                 : Date.now()
                         };
                         await saveProperties([newProperty].concat(properties));
@@ -680,8 +720,10 @@ if (mobileButton && mobileMenu) {
             });
         }
 
-        initializePropertyStore().then(function () {
-            renderProperties();
+        window.addEventListener('load', function () {
+            initializePropertyStore().then(function () {
+                renderProperties();
+            });
         });
     });
 </script>
