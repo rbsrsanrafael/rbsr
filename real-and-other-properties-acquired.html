@@ -172,9 +172,6 @@
     <p class="opacity-75">© 2026 Rural Bank of San Rafael. All Rights Reserved.</p>
 </footer>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script src="auth.js"></script>
 <script>
 const mobileButton = document.getElementById('mobile-menu-button');
@@ -247,22 +244,26 @@ if (mobileButton && mobileMenu) {
             return false;
         }
 
-        if (!window.firebase || !window.firebase.apps || !window.firebase.apps.length) {
-            window.firebase.initializeApp(firebaseConfig);
+        if (!window.firebase) {
+            console.error('Firebase SDK is not available.');
+            return false;
         }
-
-        db = window.firebase.firestore();
-        firestoreEnabled = true;
 
         try {
+            if (!window.firebase.apps || !window.firebase.apps.length) {
+                window.firebase.initializeApp(firebaseConfig);
+            }
+
+            db = window.firebase.firestore();
+            firestoreEnabled = true;
+
             storage = window.firebase.storage();
             storageEnabled = Boolean(storage);
+            return true;
         } catch (error) {
-            console.error('Firebase Storage init failed:', error);
-            storageEnabled = false;
+            console.error('Firebase initialization failed:', error);
+            return false;
         }
-
-        return true;
     }
 
     function loadPropertiesFromLocalStorage() {
@@ -291,40 +292,38 @@ if (mobileButton && mobileMenu) {
         const payload = Array.isArray(properties) ? properties : [];
         propertiesCache = payload;
 
-        let firestoreSaved = false;
-        if (firestoreEnabled && db) {
-            try {
-                const propertiesRef = db.collection('properties');
-                const batch = db.batch();
-                const snapshot = await propertiesRef.get();
+        if (!initializeFirebase() || !db) {
+            throw new Error('Firebase is unavailable.');
+        }
 
-                snapshot.docs.forEach(function (doc) {
-                    batch.delete(doc.ref);
-                });
+        try {
+            const propertiesRef = db.collection('properties');
+            const batch = db.batch();
+            const snapshot = await propertiesRef.get();
 
-                payload.forEach(function (property) {
-                    const data = { ...property };
-                    if (!data.createdAt) {
-                        data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
-                    }
-                    data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
-                    batch.set(propertiesRef.doc(property.id), data);
-                });
+            snapshot.docs.forEach(function (doc) {
+                batch.delete(doc.ref);
+            });
 
-                await batch.commit();
-                firestoreSaved = true;
-            } catch (error) {
-                console.error('Firestore save failed:', error);
-            }
+            payload.forEach(function (property) {
+                const data = { ...property };
+                if (!data.createdAt) {
+                    data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                }
+                data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                batch.set(propertiesRef.doc(property.id), data);
+            });
+
+            await batch.commit();
+        } catch (error) {
+            console.error('Firestore save failed:', error);
+            throw error;
         }
 
         try {
             localStorage.setItem(PROPERTY_STORAGE_KEY, JSON.stringify(payload));
         } catch (error) {
             console.error('Local storage save failed:', error);
-            if (!firestoreSaved) {
-                throw error;
-            }
         }
 
         return payload;
@@ -666,37 +665,42 @@ if (mobileButton && mobileMenu) {
                 const propertyId = editingPropertyId || Date.now().toString();
                 const uploadedImages = imageFiles.length ? await uploadPropertyImages(propertyId, imageFiles) : [];
 
-                if (editingPropertyId) {
-                    const updatedProperties = properties.map(function (property) {
-                        if (property.id === editingPropertyId) {
-                            const existingImages = Array.isArray(property.images) && property.images.length ? property.images : (property.image ? [property.image] : []);
-                            return {
-                                ...property,
-                                title: title,
-                                location: location,
-                                details: details,
-                                images: uploadedImages.length ? uploadedImages : existingImages
-                            };
-                        }
-                        return property;
-                    });
-                    await saveProperties(updatedProperties);
-                } else {
-                    const newProperty = {
-                        id: propertyId,
-                        title: title,
-                        location: location,
-                        details: details,
-                        images: uploadedImages,
-                        createdAt: firestoreEnabled && window.firebase && window.firebase.firestore
-                            ? window.firebase.firestore.FieldValue.serverTimestamp()
-                            : Date.now()
-                    };
-                    await saveProperties([newProperty].concat(properties));
-                }
+                try {
+                    if (editingPropertyId) {
+                        const updatedProperties = properties.map(function (property) {
+                            if (property.id === editingPropertyId) {
+                                const existingImages = Array.isArray(property.images) && property.images.length ? property.images : (property.image ? [property.image] : []);
+                                return {
+                                    ...property,
+                                    title: title,
+                                    location: location,
+                                    details: details,
+                                    images: uploadedImages.length ? uploadedImages : existingImages
+                                };
+                            }
+                            return property;
+                        });
+                        await saveProperties(updatedProperties);
+                    } else {
+                        const newProperty = {
+                            id: propertyId,
+                            title: title,
+                            location: location,
+                            details: details,
+                            images: uploadedImages,
+                            createdAt: firestoreEnabled && window.firebase && window.firebase.firestore
+                                ? window.firebase.firestore.FieldValue.serverTimestamp()
+                                : Date.now()
+                        };
+                        await saveProperties([newProperty].concat(properties));
+                    }
 
-                resetForm();
-                await renderProperties();
+                    resetForm();
+                    await renderProperties();
+                } catch (error) {
+                    console.error('Property submission failed:', error);
+                    alert('The property could not be saved. Please check your Firebase connection or rules.');
+                }
             });
         }
 
