@@ -371,6 +371,24 @@
             return sampleIds.includes(career && career.id) || sampleTitles.includes(career && career.title);
         }
 
+        function canManageCareers() {
+            if (!isLoggedIn()) {
+                return false;
+            }
+
+            if (window.rbsrAuth && window.rbsrAuth.hasPermission) {
+                return window.rbsrAuth.hasPermission('careers') || window.rbsrAuth.isAdmin && window.rbsrAuth.isAdmin();
+            }
+
+            try {
+                const stored = localStorage.getItem('rbsrUserData');
+                const user = stored ? JSON.parse(stored) : null;
+                return Boolean(user && (user.role === 'admin' || user.role === 'careers' || (Array.isArray(user.permissions) && user.permissions.includes('careers'))));
+            } catch (error) {
+                return false;
+            }
+        }
+
         function getLegacyCareers() {
             try {
                 const saved = localStorage.getItem(CAREER_STORAGE_KEY);
@@ -439,25 +457,29 @@
             const payload = Array.isArray(careers) ? careers : [];
             careersCache = payload;
 
-            if (firestoreEnabled && db) {
-                const careersRef = db.collection('careers');
-                const batch = db.batch();
-                const snapshot = await careersRef.get();
+            try {
+                if (firestoreEnabled && db) {
+                    const careersRef = db.collection('careers');
+                    const batch = db.batch();
+                    const snapshot = await careersRef.get();
 
-                snapshot.docs.forEach(function (doc) {
-                    batch.delete(doc.ref);
-                });
+                    snapshot.docs.forEach(function (doc) {
+                        batch.delete(doc.ref);
+                    });
 
-                payload.forEach(function (career) {
-                    const data = { ...career };
-                    if (!data.createdAt) {
-                        data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
-                    }
-                    data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
-                    batch.set(careersRef.doc(career.id), data);
-                });
+                    payload.forEach(function (career) {
+                        const data = { ...career };
+                        if (!data.createdAt) {
+                            data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                        }
+                        data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                        batch.set(careersRef.doc(career.id), data);
+                    });
 
-                await batch.commit();
+                    await batch.commit();
+                }
+            } catch (error) {
+                console.error('Firestore save failed, using local storage fallback:', error);
             }
 
             localStorage.setItem(CAREER_STORAGE_KEY, JSON.stringify(payload));
@@ -513,7 +535,7 @@
 
             await initializeCareerStore();
             const careers = getCareers();
-            const canManage = window.rbsrAuth && window.rbsrAuth.hasPermission && window.rbsrAuth.hasPermission('careers');
+            const canManage = canManageCareers();
 
             if (isLoggedIn() && canManage) {
                 form.classList.remove('hidden');
@@ -558,6 +580,7 @@
             const form = document.getElementById('career-form');
             const list = document.getElementById('career-list');
             const cancelButton = document.getElementById('cancel-career-edit');
+            const message = document.getElementById('career-form-message');
 
             renderCareers();
 
@@ -610,8 +633,21 @@
                     const description = document.getElementById('career-description').value.trim();
                     const requirementsText = document.getElementById('career-requirements').value.trim();
                     const email = document.getElementById('career-email').value.trim();
+                    const message = document.getElementById('career-form-message');
 
                     if (!title || !description || !requirementsText || !email) {
+                        if (message) {
+                            message.textContent = 'Please fill in every field before submitting.';
+                            message.className = 'text-sm text-red-600';
+                        }
+                        return;
+                    }
+
+                    if (!canManageCareers()) {
+                        if (message) {
+                            message.textContent = 'You need careers management access to submit.';
+                            message.className = 'text-sm text-red-600';
+                        }
                         return;
                     }
 
@@ -620,33 +656,46 @@
                     }).filter(Boolean);
                     const careers = getCareers();
 
-                    if (editingCareerId) {
-                        const updatedCareers = careers.map(function (career) {
-                            if (career.id === editingCareerId) {
-                                return {
-                                    ...career,
-                                    title: title,
-                                    description: description,
-                                    requirements: requirements,
-                                    email: email
-                                };
-                            }
-                            return career;
-                        });
-                        await saveCareers(updatedCareers);
-                    } else {
-                        careers.unshift({
-                            id: Date.now().toString(),
-                            title: title,
-                            description: description,
-                            requirements: requirements,
-                            email: email
-                        });
-                        await saveCareers(careers);
-                    }
+                    try {
+                        if (editingCareerId) {
+                            const updatedCareers = careers.map(function (career) {
+                                if (career.id === editingCareerId) {
+                                    return {
+                                        ...career,
+                                        title: title,
+                                        description: description,
+                                        requirements: requirements,
+                                        email: email
+                                    };
+                                }
+                                return career;
+                            });
+                            await saveCareers(updatedCareers);
+                        } else {
+                            careers.unshift({
+                                id: Date.now().toString(),
+                                title: title,
+                                description: description,
+                                requirements: requirements,
+                                email: email
+                            });
+                            await saveCareers(careers);
+                        }
 
-                    resetCareerForm();
-                    await renderCareers();
+                        if (message) {
+                            message.textContent = 'Opportunity saved successfully.';
+                            message.className = 'text-sm text-green-600';
+                        }
+
+                        resetCareerForm();
+                        await renderCareers();
+                    } catch (error) {
+                        console.error('Career submit failed:', error);
+                        if (message) {
+                            message.textContent = 'Could not save the opportunity. Please try again.';
+                            message.className = 'text-sm text-red-600';
+                        }
+                    }
                 });
             }
         });
