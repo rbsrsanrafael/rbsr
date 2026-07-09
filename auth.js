@@ -14,9 +14,43 @@
     };
     let firestoreDb = null;
 
+    function getSessionValue(key) {
+        try {
+            return sessionStorage.getItem(key);
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function setSessionValue(key, value) {
+        try {
+            sessionStorage.setItem(key, value);
+        } catch (error) {
+            // Ignore storage access errors.
+        }
+    }
+
+    function removeSessionValue(key) {
+        try {
+            sessionStorage.removeItem(key);
+        } catch (error) {
+            // Ignore storage access errors.
+        }
+    }
+
+    function clearLegacyAuthStorage() {
+        try {
+            localStorage.removeItem(AUTH_KEY);
+            localStorage.removeItem(USER_KEY);
+            localStorage.removeItem(USER_DATA_KEY);
+        } catch (error) {
+            // Ignore storage access errors.
+        }
+    }
+
     function getStoredUserData() {
         try {
-            const stored = localStorage.getItem(USER_DATA_KEY);
+            const stored = getSessionValue(USER_DATA_KEY);
             return stored ? JSON.parse(stored) : null;
         } catch (error) {
             return null;
@@ -24,7 +58,7 @@
     }
 
     function isLoggedIn() {
-        return localStorage.getItem(AUTH_KEY) === 'true';
+        return getSessionValue(AUTH_KEY) === 'true';
     }
 
     function normalizeUser(user) {
@@ -195,7 +229,7 @@
 
     function getCurrentUser() {
         const stored = getStoredUserData();
-        const fallbackUser = { username: localStorage.getItem(USER_KEY) || 'User', role: 'custom', permissions: [] };
+        const fallbackUser = { username: getSessionValue(USER_KEY) || 'User', role: 'custom', permissions: [] };
         return normalizeUser(stored || fallbackUser);
     }
 
@@ -211,9 +245,10 @@
     }
 
     function logout() {
-        localStorage.removeItem(AUTH_KEY);
-        localStorage.removeItem(USER_KEY);
-        localStorage.removeItem(USER_DATA_KEY);
+        removeSessionValue(AUTH_KEY);
+        removeSessionValue(USER_KEY);
+        removeSessionValue(USER_DATA_KEY);
+        clearLegacyAuthStorage();
         window.location.href = 'index.html';
     }
 
@@ -242,6 +277,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        clearLegacyAuthStorage();
         updateAuthLinks();
 
         document.body.addEventListener('click', function (event) {
