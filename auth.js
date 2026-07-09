@@ -105,18 +105,23 @@
             return null;
         }
 
-        if (!window.firebase.apps || !window.firebase.apps.length) {
-            if (window.firebase.initializeApp) {
-                window.firebase.initializeApp(firebaseConfig);
+        try {
+            if (!window.firebase.apps || !window.firebase.apps.length) {
+                if (window.firebase.initializeApp) {
+                    window.firebase.initializeApp(firebaseConfig);
+                }
             }
-        }
 
-        if (!window.firebase.firestore) {
+            if (!window.firebase.firestore) {
+                return null;
+            }
+
+            firestoreDb = window.firebase.firestore();
+            return firestoreDb;
+        } catch (error) {
+            console.error('Firebase initialization failed:', error);
             return null;
         }
-
-        firestoreDb = window.firebase.firestore();
-        return firestoreDb;
     }
 
     function getUsersFromLocalStorage() {
@@ -149,6 +154,7 @@
             localStorage.setItem(USERS_KEY, JSON.stringify(users));
             return users;
         } catch (error) {
+            console.error('Failed to load users from Firestore:', error);
             return getUsersFromLocalStorage();
         }
     }
@@ -222,8 +228,11 @@
         }
 
         const users = await loadUsersFromFirebase();
+        const normalizedUsername = String(username || '').trim();
+        const normalizedPassword = String(password || '');
+
         return users.find(function (item) {
-            return item.username === username && item.password === password;
+            return String(item.username || '').trim() === normalizedUsername && String(item.password || '') === normalizedPassword;
         }) || null;
     }
 
