@@ -221,7 +221,7 @@ if (mobileButton && mobileMenu) {
     };
 
     function isLoggedIn() {
-        return localStorage.getItem('rbsrAuth') === 'true';
+        return window.rbsrAuth && window.rbsrAuth.isLoggedIn ? window.rbsrAuth.isLoggedIn() : false;
     }
 
     function isFirebaseConfigured() {

@@ -348,7 +348,7 @@
     let firestoreEnabled = false;
 
         function isLoggedIn() {
-            return localStorage.getItem('rbsrAuth') === 'true';
+            return window.rbsrAuth && window.rbsrAuth.isLoggedIn ? window.rbsrAuth.isLoggedIn() : false;
         }
 
         function escapeHtml(value) {

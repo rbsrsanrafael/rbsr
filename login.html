@@ -97,7 +97,7 @@ if (mobileButton && mobileMenu) {
         }
     });
 }
-    if (localStorage.getItem('rbsrAuth') === 'true') {
+    if (window.rbsrAuth && window.rbsrAuth.isLoggedIn()) {
         window.location.href = 'careers.html';
     }
 
@@ -111,9 +111,9 @@ if (mobileButton && mobileMenu) {
         const user = await window.rbsrAuth.authenticateUser(username, password);
 
         if (user) {
-            localStorage.setItem('rbsrAuth', 'true');
-            localStorage.setItem('rbsrUser', user.username);
-            localStorage.setItem('rbsrUserData', JSON.stringify(user));
+            sessionStorage.setItem('rbsrAuth', 'true');
+            sessionStorage.setItem('rbsrUser', user.username);
+            sessionStorage.setItem('rbsrUserData', JSON.stringify(user));
 
             if (user.role === 'admin' || (user.permissions || []).includes('admin')) {
                 window.location.href = 'admin.html';
