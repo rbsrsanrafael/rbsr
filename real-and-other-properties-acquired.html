@@ -478,13 +478,17 @@ if (mobileButton && mobileMenu) {
     }
 
     async function uploadPropertyImages(propertyId, files) {
-        if (!storageEnabled || !storage || !Array.isArray(files) || !files.length) {
+        if (!Array.isArray(files) || !files.length) {
             return [];
         }
 
         const uploadResults = await Promise.all(files.map(function (file, index) {
             if (!file || !file.type || !file.type.startsWith('image/')) {
                 return Promise.resolve('');
+            }
+
+            if (!storageEnabled || !storage) {
+                return readImageAsDataUrl(file, 1200, 1200, 0.8);
             }
 
             const extension = (file.name && file.name.includes('.')) ? file.name.split('.').pop() : 'jpg';
@@ -496,8 +500,8 @@ if (mobileButton && mobileMenu) {
                     return snapshot.ref.getDownloadURL();
                 })
                 .catch(function (error) {
-                    console.error('Image upload failed:', error);
-                    return '';
+                    console.error('Image upload failed, using local preview instead:', error);
+                    return readImageAsDataUrl(file, 1200, 1200, 0.8);
                 });
         }));
 
