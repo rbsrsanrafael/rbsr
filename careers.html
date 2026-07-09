@@ -185,6 +185,8 @@
                             <input id="career-email" type="email" required class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400" placeholder="you@example.com">
                         </div>
 
+                        <p id="career-form-message" class="text-sm text-gray-600"></p>
+
                         <button type="submit" class="rounded-xl bg-brand-green px-5 py-3 font-bold text-white hover:bg-green-800 transition">
                             Add Opportunity
                         </button>
@@ -324,12 +326,9 @@
         </div>
     </footer>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="auth.js"></script>
 <script>
     const CAREER_STORAGE_KEY = 'rbsrCareers';
     const firebaseConfig = {
@@ -347,8 +346,38 @@
     let db = null;
     let firestoreEnabled = false;
 
+        function getStoredUserData() {
+            try {
+                const sessionUserData = sessionStorage.getItem('rbsrUserData');
+                if (sessionUserData) {
+                    return JSON.parse(sessionUserData);
+                }
+            } catch (error) {
+                // Ignore malformed session data.
+            }
+
+            try {
+                const legacyUserData = localStorage.getItem('rbsrUserData');
+                if (legacyUserData) {
+                    return JSON.parse(legacyUserData);
+                }
+            } catch (error) {
+                // Ignore malformed legacy data.
+            }
+
+            return null;
+        }
+
         function isLoggedIn() {
-            return window.rbsrAuth && window.rbsrAuth.isLoggedIn ? window.rbsrAuth.isLoggedIn() : false;
+            const sessionFlag = sessionStorage.getItem('rbsrAuth');
+            if (sessionFlag === 'true') {
+                return true;
+            }
+            if (sessionFlag === 'false') {
+                return false;
+            }
+
+            return window.rbsrAuth && window.rbsrAuth.isLoggedIn ? window.rbsrAuth.isLoggedIn() : localStorage.getItem('rbsrAuth') === 'true';
         }
 
         function escapeHtml(value) {
@@ -381,8 +410,7 @@
             }
 
             try {
-                const stored = localStorage.getItem('rbsrUserData');
-                const user = stored ? JSON.parse(stored) : null;
+                const user = getStoredUserData();
                 return Boolean(user && (user.role === 'admin' || user.role === 'careers' || (Array.isArray(user.permissions) && user.permissions.includes('careers'))));
             } catch (error) {
                 return false;
@@ -412,20 +440,26 @@
 
         function initializeFirebase() {
             if (!window.firebase) {
+                console.error('Firebase SDK is not available.');
                 return false;
             }
 
-            if (!window.firebase.apps || !window.firebase.apps.length) {
-                window.firebase.initializeApp(firebaseConfig);
-            }
+            try {
+                if (!window.firebase.apps || !window.firebase.apps.length) {
+                    window.firebase.initializeApp(firebaseConfig);
+                }
 
-            if (!window.firebase.firestore) {
+                if (!window.firebase.firestore) {
+                    return false;
+                }
+
+                db = window.firebase.firestore();
+                firestoreEnabled = true;
+                return true;
+            } catch (error) {
+                console.error('Firebase initialization failed:', error);
                 return false;
             }
-
-            db = window.firebase.firestore();
-            firestoreEnabled = true;
-            return true;
         }
 
         function loadCareersFromLocalStorage() {
@@ -457,29 +491,32 @@
             const payload = Array.isArray(careers) ? careers : [];
             careersCache = payload;
 
+            if (!initializeFirebase() || !db) {
+                throw new Error('Firebase is unavailable.');
+            }
+
             try {
-                if (firestoreEnabled && db) {
-                    const careersRef = db.collection('careers');
-                    const batch = db.batch();
-                    const snapshot = await careersRef.get();
+                const careersRef = db.collection('careers');
+                const batch = db.batch();
+                const snapshot = await careersRef.get();
 
-                    snapshot.docs.forEach(function (doc) {
-                        batch.delete(doc.ref);
-                    });
+                snapshot.docs.forEach(function (doc) {
+                    batch.delete(doc.ref);
+                });
 
-                    payload.forEach(function (career) {
-                        const data = { ...career };
-                        if (!data.createdAt) {
-                            data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
-                        }
-                        data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
-                        batch.set(careersRef.doc(career.id), data);
-                    });
+                payload.forEach(function (career) {
+                    const data = { ...career };
+                    if (!data.createdAt) {
+                        data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                    }
+                    data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                    batch.set(careersRef.doc(career.id), data);
+                });
 
-                    await batch.commit();
-                }
+                await batch.commit();
             } catch (error) {
-                console.error('Firestore save failed, using local storage fallback:', error);
+                console.error('Firestore save failed:', error);
+                throw error;
             }
 
             localStorage.setItem(CAREER_STORAGE_KEY, JSON.stringify(payload));
