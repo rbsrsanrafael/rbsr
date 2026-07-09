@@ -19,12 +19,12 @@
 <body class="bg-gray-50 text-gray-900">
 
 <header class="bg-brand-green fixed top-0 left-0 right-0 shadow-lg z-50">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="index.html" class="flex items-center text-brand-yellow font-bold">
-            <img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-10 w-10 mr-2 rounded-md">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between relative">
+        <a href="index.html" class="flex items-center text-sm sm:text-base md:text-lg font-bold text-brand-yellow">
+            <img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-9 w-9 sm:h-10 sm:w-10 mr-2 rounded-md">
             <span>Rural Bank of San Rafael</span>
         </a>
-        <nav class="hidden md:flex space-x-6 text-white items-center">
+        <nav class="hidden md:flex space-x-4 lg:space-x-6 text-white items-center">
             <a href="index.html" class="hover:text-brand-yellow">Home</a>
             <a href="about.html" class="hover:text-brand-yellow">About</a>
             <a href="services.html" class="hover:text-brand-yellow">Services</a>
@@ -32,6 +32,17 @@
             <a href="contact.html" class="hover:text-brand-yellow">Contact</a>
             <a href="login.html" class="hover:text-brand-yellow" data-auth-link>Login</a>
         </nav>
+        <button id="mobile-menu-button" type="button" class="md:hidden rounded-lg border border-white/30 p-2 text-white focus:outline-none" aria-label="Toggle menu">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden absolute left-0 right-0 top-full bg-brand-green border-t border-white/20 px-4 py-4 space-y-2 shadow-lg">
+        <a href="index.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Home</a>
+        <a href="about.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">About</a>
+        <a href="services.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Services</a>
+        <a href="careers.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Careers</a>
+        <a href="contact.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Contact</a>
+        <a href="login.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10" data-auth-link>Login</a>
     </div>
 </header>
 
@@ -69,6 +80,23 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script src="auth.js"></script>
 <script>
+const mobileButton = document.getElementById('mobile-menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+if (mobileButton && mobileMenu) {
+    mobileButton.addEventListener('click', function () {
+        mobileMenu.classList.toggle('hidden');
+    });
+    mobileMenu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            mobileMenu.classList.add('hidden');
+        });
+    });
+    window.addEventListener('resize', function () {
+        if (window.innerWidth >= 768) {
+            mobileMenu.classList.add('hidden');
+        }
+    });
+}
     if (localStorage.getItem('rbsrAuth') === 'true') {
         window.location.href = 'careers.html';
     }

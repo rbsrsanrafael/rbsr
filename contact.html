@@ -57,16 +57,16 @@ body.fade-out {
 <body class="bg-gray-50 text-gray-900">
 
 <header class="bg-brand-green fixed top-0 left-0 right-0 shadow-lg z-50">
-<div class="container mx-auto px-4 py-4 flex justify-between items-center">
+<div class="container mx-auto px-4 py-4 flex items-center justify-between relative">
 
-<a href="index.html" class="flex items-center text-brand-yellow font-bold">
+<a href="index.html" class="flex items-center text-sm sm:text-base md:text-lg font-bold text-brand-yellow">
 <img src="277570418_377604507712528_8014509792721781536_n.jpg" 
-class="h-10 w-10 mr-2 rounded-md">
+class="h-9 w-9 sm:h-10 sm:w-10 mr-2 rounded-md">
 <span>Rural Bank of San Rafael</span>
 </a>
 
 <!-- NAV -->
-<nav class="hidden md:flex space-x-6 text-white items-center">
+<nav class="hidden md:flex space-x-4 lg:space-x-6 text-white items-center">
 
 <a href="index.html" class="hover:text-brand-yellow">Home</a>
 <a href="about.html" class="hover:text-brand-yellow">About</a>
@@ -103,14 +103,14 @@ Real & Other Properties
 </nav>
 
 <!-- MOBILE BUTTON -->
-<button id="mobile-menu-button" class="md:hidden text-white text-2xl">
+<button id="mobile-menu-button" type="button" class="md:hidden rounded-lg border border-white/30 p-2 text-white focus:outline-none" aria-label="Toggle menu">
 ☰
 </button>
 
 </div>
 
 <!-- MOBILE MENU -->
-<div id="mobile-menu" class="hidden md:hidden px-4 pb-4 text-white space-y-2">
+<div id="mobile-menu" class="hidden md:hidden absolute left-0 right-0 top-full bg-brand-green border-t border-white/20 px-4 py-4 text-white space-y-2 shadow-lg">
 
 <a href="index.html" class="block py-2">Home</a>
 <a href="about.html" class="block py-2">About</a>

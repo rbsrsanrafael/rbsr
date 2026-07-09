@@ -26,13 +26,13 @@
 <body class="bg-gray-50 text-gray-900">
 
 <header class="bg-brand-green fixed top-0 left-0 right-0 shadow-lg z-50">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="index.html" class="flex items-center text-brand-yellow font-bold">
-            <img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-10 w-10 mr-2 rounded-md">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between relative">
+        <a href="index.html" class="flex items-center text-sm sm:text-base md:text-lg font-bold text-brand-yellow">
+            <img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-9 w-9 sm:h-10 sm:w-10 mr-2 rounded-md">
             <span>Rural Bank of San Rafael</span>
         </a>
 
-        <nav class="hidden md:flex space-x-6 text-white items-center">
+        <nav class="hidden md:flex space-x-4 lg:space-x-6 text-white items-center">
             <a href="index.html" class="hover:text-brand-yellow">Home</a>
             <a href="about.html" class="hover:text-brand-yellow">About</a>
             <div class="relative group">
@@ -47,6 +47,20 @@
             <a href="contact.html" class="hover:text-brand-yellow">Contact</a>
             <a href="login.html" class="hover:text-brand-yellow" data-auth-link>Login</a>
         </nav>
+
+        <button id="mobile-menu-button" type="button" class="md:hidden rounded-lg border border-white/30 p-2 text-white focus:outline-none" aria-label="Toggle menu">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden absolute left-0 right-0 top-full bg-brand-green border-t border-white/20 px-4 py-4 space-y-2 shadow-lg">
+        <a href="index.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Home</a>
+        <a href="about.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">About</a>
+        <a href="services.html#savings" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Savings & Deposits</a>
+        <a href="services.html#loans" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Loan Services</a>
+        <a href="real-and-other-properties-acquired.html" class="block rounded-lg px-3 py-2 text-brand-yellow font-semibold hover:bg-white/10">Real & Other Properties</a>
+        <a href="careers.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Careers</a>
+        <a href="contact.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Contact</a>
+        <a href="login.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10" data-auth-link>Login</a>
     </div>
 </header>
 
@@ -162,6 +176,25 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script src="auth.js"></script>
+<script>
+const mobileButton = document.getElementById('mobile-menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+if (mobileButton && mobileMenu) {
+    mobileButton.addEventListener('click', function () {
+        mobileMenu.classList.toggle('hidden');
+    });
+    mobileMenu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            mobileMenu.classList.add('hidden');
+        });
+    });
+    window.addEventListener('resize', function () {
+        if (window.innerWidth >= 768) {
+            mobileMenu.classList.add('hidden');
+        }
+    });
+}
+</script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
@@ -445,33 +478,33 @@
         });
     }
 
-    async function uploadPropertyImages(propertyId, imageDataUrls) {
-        if (!storageEnabled || !storage || !Array.isArray(imageDataUrls) || !imageDataUrls.length) {
-            return imageDataUrls || [];
+    async function uploadPropertyImages(propertyId, files) {
+        if (!storageEnabled || !storage || !Array.isArray(files) || !files.length) {
+            return [];
         }
 
-        const uploadResults = await Promise.all(imageDataUrls.map(function (imageDataUrl, index) {
-            if (!imageDataUrl || typeof imageDataUrl !== 'string' || !imageDataUrl.startsWith('data:')) {
-                return Promise.resolve(imageDataUrl);
+        const uploadResults = await Promise.all(files.map(function (file, index) {
+            if (!file || !file.type || !file.type.startsWith('image/')) {
+                return Promise.resolve('');
             }
 
-            const matches = imageDataUrl.match(/^data:(.+);base64,(.+)$/);
-            if (!matches) {
-                return Promise.resolve(imageDataUrl);
-            }
-
-            const contentType = matches[1] || 'image/jpeg';
-            const extension = contentType.includes('png') ? 'png' : 'jpg';
+            const extension = (file.name && file.name.includes('.')) ? file.name.split('.').pop() : 'jpg';
             const fileName = 'property-' + propertyId + '-' + Date.now() + '-' + index + '.' + extension;
             const fileRef = storage.ref('properties/' + fileName);
 
-            return fileRef.putString(imageDataUrl, 'data_url', { contentType: contentType })
+            return fileRef.put(file, { contentType: file.type })
                 .then(function (snapshot) {
                     return snapshot.ref.getDownloadURL();
+                })
+                .catch(function (error) {
+                    console.error('Image upload failed:', error);
+                    return '';
                 });
         }));
 
-        return uploadResults;
+        return uploadResults.filter(function (item) {
+            return Boolean(item);
+        });
     }
 
     async function showPropertyImage(propertyId, direction) {
@@ -624,9 +657,6 @@
                 const location = document.getElementById('property-location').value.trim();
                 const details = document.getElementById('property-details').value.trim();
                 const imageFiles = Array.from(imageInput ? imageInput.files || [] : []);
-                const imageDataUrls = await Promise.all(imageFiles.map(function (file) {
-                    return readImageAsDataUrl(file, 900, 900, 0.8);
-                }));
 
                 if (!title || !location || !details) {
                     return;
@@ -634,7 +664,7 @@
 
                 const properties = getProperties();
                 const propertyId = editingPropertyId || Date.now().toString();
-                const uploadedImages = imageDataUrls.length ? await uploadPropertyImages(propertyId, imageDataUrls) : [];
+                const uploadedImages = imageFiles.length ? await uploadPropertyImages(propertyId, imageFiles) : [];
 
                 if (editingPropertyId) {
                     const updatedProperties = properties.map(function (property) {

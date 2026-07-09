@@ -53,52 +53,45 @@ body { font-family: 'Merriweather', serif; }
 <body class="bg-gray-50 text-gray-900">
 
 <header class="bg-brand-green fixed top-0 left-0 right-0 shadow-lg z-50">
-<div class="container mx-auto py-4 flex justify-between items-center px-4">
+<div class="container mx-auto py-4 flex items-center justify-between px-4 relative">
 
-<a href="index.html" class="flex items-center text-brand-yellow font-bold">
-<img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-10 w-10 mr-2 rounded-md">
+<a href="index.html" class="flex items-center text-sm sm:text-base md:text-lg font-bold text-brand-yellow">
+<img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-9 w-9 sm:h-10 sm:w-10 mr-2 rounded-md">
 <span>Rural Bank of San Rafael</span>
 </a>
 
-<nav class="hidden md:flex space-x-6 text-white items-center">
-
+<nav class="hidden md:flex space-x-4 lg:space-x-6 text-white items-center">
 <a href="index.html">Home</a>
 <a href="about.html">About</a>
 
 <div class="relative group">
-    
-    <button class="text-brand-yellow focus:outline-none">
-        Services ▾
-    </button>
-
-    <div class="absolute left-0 mt-2 pt-2 w-52 bg-white text-black rounded-md shadow-lg 
-        opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-        transition-all duration-200">
-
-<a href="#savings" onclick="showSection('savings')" 
-class="block px-4 py-2 hover:bg-gray-100">
-Savings & Deposits
-</a>
-
-<a href="#loans" onclick="showSection('loans')" 
-class="block px-4 py-2 hover:bg-gray-100">
-Loan Services
-</a>
-
-<a href="real-and-other-properties-acquired.html" 
-class="block px-4 py-2 hover:bg-gray-100">
-Real & Other Properties
-</a>
-
+    <button class="text-brand-yellow focus:outline-none">Services ▾</button>
+    <div class="absolute left-0 mt-2 pt-2 w-52 bg-white text-black rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+<a href="#savings" onclick="showSection('savings')" class="block px-4 py-2 hover:bg-gray-100">Savings & Deposits</a>
+<a href="#loans" onclick="showSection('loans')" class="block px-4 py-2 hover:bg-gray-100">Loan Services</a>
+<a href="real-and-other-properties-acquired.html" class="block px-4 py-2 hover:bg-gray-100">Real & Other Properties</a>
     </div>
-
 </div>
 
 <a href="careers.html">Careers</a>
 <a href="contact.html">Contact</a>
 <a href="login.html" data-auth-link>Login</a>
-
 </nav>
+
+<button id="mobile-menu-button" type="button" class="md:hidden rounded-lg border border-white/30 p-2 text-white focus:outline-none" aria-label="Toggle menu">
+<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+</button>
+</div>
+
+<div id="mobile-menu" class="hidden md:hidden absolute left-0 right-0 top-full bg-brand-green border-t border-white/20 px-4 py-4 space-y-2 shadow-lg">
+<a href="index.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Home</a>
+<a href="about.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">About</a>
+<a href="#savings" onclick="showSection('savings'); document.getElementById('mobile-menu').classList.add('hidden');" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Savings & Deposits</a>
+<a href="#loans" onclick="showSection('loans'); document.getElementById('mobile-menu').classList.add('hidden');" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Loan Services</a>
+<a href="real-and-other-properties-acquired.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Real & Other Properties</a>
+<a href="careers.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Careers</a>
+<a href="contact.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Contact</a>
+<a href="login.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10" data-auth-link>Login</a>
 </div>
 </header>
 
