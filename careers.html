@@ -517,11 +517,13 @@
             if (formTitle) {
                 formTitle.textContent = 'Add a Career Opportunity';
             }
-            if (cancelButton) {
-                cancelButton.classList.add('hidden');
-            }
             if (submitButton) {
                 submitButton.textContent = 'Add Opportunity';
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-60', 'cursor-not-allowed');
+            }
+            if (cancelButton) {
+                cancelButton.classList.add('hidden');
             }
             editingCareerId = null;
         }
@@ -539,6 +541,11 @@
 
             if (isLoggedIn() && canManage) {
                 form.classList.remove('hidden');
+                const submitButton = form.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                }
                 status.innerHTML = '<span class="font-semibold text-brand-green">Editing enabled · shared with other users</span>';
             } else {
                 form.classList.add('hidden');
@@ -634,6 +641,7 @@
                     const requirementsText = document.getElementById('career-requirements').value.trim();
                     const email = document.getElementById('career-email').value.trim();
                     const message = document.getElementById('career-form-message');
+                    const submitButton = form.querySelector('button[type="submit"]');
 
                     if (!title || !description || !requirementsText || !email) {
                         if (message) {
@@ -649,6 +657,12 @@
                             message.className = 'text-sm text-red-600';
                         }
                         return;
+                    }
+
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                        submitButton.textContent = 'Saving...';
+                        submitButton.classList.add('opacity-60', 'cursor-not-allowed');
                     }
 
                     const requirements = requirementsText.split(/\n+/).map(function (item) {
@@ -694,6 +708,12 @@
                         if (message) {
                             message.textContent = 'Could not save the opportunity. Please try again.';
                             message.className = 'text-sm text-red-600';
+                        }
+                    } finally {
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                            submitButton.textContent = editingCareerId ? 'Update Opportunity' : 'Add Opportunity';
+                            submitButton.classList.remove('opacity-60', 'cursor-not-allowed');
                         }
                     }
                 });
