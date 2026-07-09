@@ -164,6 +164,7 @@
 <script src="auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script>
     const PROPERTY_STORAGE_KEY = 'rbsrProperties';
     const placeholderImage = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500"><rect width="800" height="500" fill="#e5e7eb"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="28" fill="#6b7280">Property Image</text></svg>');
@@ -172,10 +173,12 @@
     let propertiesLoaded = false;
     let unsubscribeFromProperties = null;
     let db = null;
+    let storage = null;
     let firestoreEnabled = false;
+    let storageEnabled = false;
 
     const firebaseConfig = {
-    apiKey: "AIzaSyAR5SxlCcOtytd9rzM6MwHnMZp5w",
+    apiKey: "AIzaSyAR5SxlCcOtytd9rzM6MwHnMAYzXXMZp5w",
     authDomain: "rbsrwebsite-581e1.firebaseapp.com",
     projectId: "rbsrwebsite-581e1",
     storageBucket: "rbsrwebsite-581e1.firebasestorage.app",
@@ -217,6 +220,15 @@
 
         db = window.firebase.firestore();
         firestoreEnabled = true;
+
+        try {
+            storage = window.firebase.storage();
+            storageEnabled = Boolean(storage);
+        } catch (error) {
+            console.error('Firebase Storage init failed:', error);
+            storageEnabled = false;
+        }
+
         return true;
     }
 
@@ -246,28 +258,42 @@
         const payload = Array.isArray(properties) ? properties : [];
         propertiesCache = payload;
 
+        let firestoreSaved = false;
         if (firestoreEnabled && db) {
-            const propertiesRef = db.collection('properties');
-            const batch = db.batch();
-            const snapshot = await propertiesRef.get();
+            try {
+                const propertiesRef = db.collection('properties');
+                const batch = db.batch();
+                const snapshot = await propertiesRef.get();
 
-            snapshot.docs.forEach(function (doc) {
-                batch.delete(doc.ref);
-            });
+                snapshot.docs.forEach(function (doc) {
+                    batch.delete(doc.ref);
+                });
 
-            payload.forEach(function (property) {
-                const data = { ...property };
-                if (!data.createdAt) {
-                    data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
-                }
-                data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
-                batch.set(propertiesRef.doc(property.id), data);
-            });
+                payload.forEach(function (property) {
+                    const data = { ...property };
+                    if (!data.createdAt) {
+                        data.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                    }
+                    data.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                    batch.set(propertiesRef.doc(property.id), data);
+                });
 
-            await batch.commit();
+                await batch.commit();
+                firestoreSaved = true;
+            } catch (error) {
+                console.error('Firestore save failed:', error);
+            }
         }
 
-        localStorage.setItem(PROPERTY_STORAGE_KEY, JSON.stringify(payload));
+        try {
+            localStorage.setItem(PROPERTY_STORAGE_KEY, JSON.stringify(payload));
+        } catch (error) {
+            console.error('Local storage save failed:', error);
+            if (!firestoreSaved) {
+                throw error;
+            }
+        }
+
         return payload;
     }
 
@@ -367,7 +393,7 @@
         }).join('');
     }
 
-    function readImageAsDataUrl(file) {
+    function readImageAsDataUrl(file, maxWidth, maxHeight, quality) {
         return new Promise(function (resolve) {
             if (!file) {
                 resolve('');
@@ -376,10 +402,76 @@
 
             const reader = new FileReader();
             reader.onload = function () {
-                resolve(reader.result);
+                const source = reader.result;
+                if (!source || !file.type || !file.type.startsWith('image/')) {
+                    resolve(source || '');
+                    return;
+                }
+
+                const image = new Image();
+                image.onload = function () {
+                    const targetWidth = maxWidth || 1200;
+                    const targetHeight = maxHeight || 1200;
+                    const canvas = document.createElement('canvas');
+                    let width = image.width;
+                    let height = image.height;
+
+                    if (width > height) {
+                        if (width > targetWidth) {
+                            height = Math.round(height * (targetWidth / width));
+                            width = targetWidth;
+                        }
+                    } else if (height > targetHeight) {
+                        width = Math.round(width * (targetHeight / height));
+                        height = targetHeight;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const context = canvas.getContext('2d');
+                    context.drawImage(image, 0, 0, width, height);
+                    const mimeType = file.type.includes('png') ? 'image/png' : 'image/jpeg';
+                    resolve(canvas.toDataURL(mimeType, quality || 0.75));
+                };
+                image.onerror = function () {
+                    resolve(source || '');
+                };
+                image.src = source;
+            };
+            reader.onerror = function () {
+                resolve('');
             };
             reader.readAsDataURL(file);
         });
+    }
+
+    async function uploadPropertyImages(propertyId, imageDataUrls) {
+        if (!storageEnabled || !storage || !Array.isArray(imageDataUrls) || !imageDataUrls.length) {
+            return imageDataUrls || [];
+        }
+
+        const uploadResults = await Promise.all(imageDataUrls.map(function (imageDataUrl, index) {
+            if (!imageDataUrl || typeof imageDataUrl !== 'string' || !imageDataUrl.startsWith('data:')) {
+                return Promise.resolve(imageDataUrl);
+            }
+
+            const matches = imageDataUrl.match(/^data:(.+);base64,(.+)$/);
+            if (!matches) {
+                return Promise.resolve(imageDataUrl);
+            }
+
+            const contentType = matches[1] || 'image/jpeg';
+            const extension = contentType.includes('png') ? 'png' : 'jpg';
+            const fileName = 'property-' + propertyId + '-' + Date.now() + '-' + index + '.' + extension;
+            const fileRef = storage.ref('properties/' + fileName);
+
+            return fileRef.putString(imageDataUrl, 'data_url', { contentType: contentType })
+                .then(function (snapshot) {
+                    return snapshot.ref.getDownloadURL();
+                });
+        }));
+
+        return uploadResults;
     }
 
     async function showPropertyImage(propertyId, direction) {
@@ -430,13 +522,7 @@
                 }
 
                 const imageResults = await Promise.all(files.map(function (file) {
-                    return new Promise(function (resolve) {
-                        const reader = new FileReader();
-                        reader.onload = function () {
-                            resolve(reader.result);
-                        };
-                        reader.readAsDataURL(file);
-                    });
+                    return readImageAsDataUrl(file, 700, 700, 0.7);
                 }));
 
                 preview.innerHTML = imageResults.map(function (image) {
@@ -538,8 +624,8 @@
                 const location = document.getElementById('property-location').value.trim();
                 const details = document.getElementById('property-details').value.trim();
                 const imageFiles = Array.from(imageInput ? imageInput.files || [] : []);
-                const images = await Promise.all(imageFiles.map(function (file) {
-                    return readImageAsDataUrl(file);
+                const imageDataUrls = await Promise.all(imageFiles.map(function (file) {
+                    return readImageAsDataUrl(file, 900, 900, 0.8);
                 }));
 
                 if (!title || !location || !details) {
@@ -547,16 +633,19 @@
                 }
 
                 const properties = getProperties();
+                const propertyId = editingPropertyId || Date.now().toString();
+                const uploadedImages = imageDataUrls.length ? await uploadPropertyImages(propertyId, imageDataUrls) : [];
 
                 if (editingPropertyId) {
                     const updatedProperties = properties.map(function (property) {
                         if (property.id === editingPropertyId) {
+                            const existingImages = Array.isArray(property.images) && property.images.length ? property.images : (property.image ? [property.image] : []);
                             return {
                                 ...property,
                                 title: title,
                                 location: location,
                                 details: details,
-                                images: images.length ? images : (property.images || (property.image ? [property.image] : []))
+                                images: uploadedImages.length ? uploadedImages : existingImages
                             };
                         }
                         return property;
@@ -564,11 +653,11 @@
                     await saveProperties(updatedProperties);
                 } else {
                     const newProperty = {
-                        id: Date.now().toString(),
+                        id: propertyId,
                         title: title,
                         location: location,
                         details: details,
-                        images: images,
+                        images: uploadedImages,
                         createdAt: firestoreEnabled && window.firebase && window.firebase.firestore
                             ? window.firebase.firestore.FieldValue.serverTimestamp()
                             : Date.now()

@@ -333,7 +333,7 @@
 <script>
     const CAREER_STORAGE_KEY = 'rbsrCareers';
     const firebaseConfig = {
-        apiKey: "AIzaSyAR5SxlCcOtytd9rzM6MwHnMZp5w",
+        apiKey: "AIzaSyAR5SxlCcOtytd9rzM6MwHnMAYzXXMZp5w",
         authDomain: "rbsrwebsite-581e1.firebaseapp.com",
         projectId: "rbsrwebsite-581e1",
         storageBucket: "rbsrwebsite-581e1.firebasestorage.app",
@@ -393,9 +393,18 @@
         }
 
         function initializeFirebase() {
-            if (!window.firebase || !window.firebase.apps || !window.firebase.apps.length) {
+            if (!window.firebase) {
+                return false;
+            }
+
+            if (!window.firebase.apps || !window.firebase.apps.length) {
                 window.firebase.initializeApp(firebaseConfig);
             }
+
+            if (!window.firebase.firestore) {
+                return false;
+            }
+
             db = window.firebase.firestore();
             firestoreEnabled = true;
             return true;
@@ -460,8 +469,9 @@
                 return getCareers();
             }
 
-            initializeFirebase();
-            subscribeToCareers();
+            if (initializeFirebase()) {
+                subscribeToCareers();
+            }
 
             const legacyCareers = getLegacyCareers();
             if (legacyCareers.length) {

@@ -175,6 +175,7 @@
             status.textContent = 'Signed in as ' + window.rbsrAuth.getCurrentUser().username;
         }
 
+        await window.rbsrAuth.loadUsers();
         renderUsers();
 
         if (cancelButton) {
@@ -273,6 +274,7 @@
 
                 saveUsers(users);
                 await window.rbsrAuth.saveUser(userPayload);
+                await window.rbsrAuth.loadUsers();
                 resetUserForm();
                 renderUsers();
             });

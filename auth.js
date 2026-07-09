@@ -4,7 +4,7 @@
     const USER_DATA_KEY = 'rbsrUserData';
     const USERS_KEY = 'rbsrUsers';
     const firebaseConfig = {
-        apiKey: "AIzaSyAR5SxlCcOtytd9rzM6MwHnMZp5w",
+        apiKey: "AIzaSyAR5SxlCcOtytd9rzM6MwHnMAYzXXMZp5w",
         authDomain: "rbsrwebsite-581e1.firebaseapp.com",
         projectId: "rbsrwebsite-581e1",
         storageBucket: "rbsrwebsite-581e1.firebasestorage.app",
@@ -67,13 +67,17 @@
             return firestoreDb;
         }
 
-        if (!window.firebase || !window.firebase.apps || !window.firebase.apps.length) {
-            if (window.firebase && window.firebase.initializeApp) {
+        if (!window.firebase) {
+            return null;
+        }
+
+        if (!window.firebase.apps || !window.firebase.apps.length) {
+            if (window.firebase.initializeApp) {
                 window.firebase.initializeApp(firebaseConfig);
             }
         }
 
-        if (!window.firebase || !window.firebase.firestore) {
+        if (!window.firebase.firestore) {
             return null;
         }
 
@@ -132,12 +136,18 @@
         }
 
         try {
-            await db.collection('users').doc(userData.username).set({
+            const payload = {
                 role: userData.role || 'custom',
                 permissions: Array.isArray(userData.permissions) ? userData.permissions : [],
                 password: userData.password || '',
                 updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
-            });
+            };
+
+            if (!userData.createdAt) {
+                payload.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
+            }
+
+            await db.collection('users').doc(userData.username).set(payload);
             localStorage.setItem(USERS_KEY, JSON.stringify(await loadUsersFromFirebase()));
             return true;
         } catch (error) {
