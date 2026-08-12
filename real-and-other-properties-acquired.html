@@ -151,8 +151,9 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2" for="property-image">Property Pictures</label>
-                    <input id="property-image" type="file" accept="image/*" multiple class="block w-full text-sm text-gray-600">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2" for="property-image-links">Property Picture Links</label>
+                    <p class="text-xs text-gray-600 mb-2">Enter image URLs (one per line)</p>
+                    <textarea id="property-image-links" rows="3" class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 font-mono text-sm" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"></textarea>
                     <div id="property-image-preview" class="mt-4 grid gap-3 sm:grid-cols-2"></div>
                 </div>
 
@@ -421,105 +422,41 @@ if (mobileButton && mobileMenu) {
         }
 
         list.innerHTML = properties.map(function (property) {
-            const images = Array.isArray(property.images) && property.images.length ? property.images : (property.image ? [property.image] : []);
-            const imageCount = images.length || 1;
-            const mainImage = images[0] || placeholderImage;
-            const navMarkup = imageCount > 1 ? '<button type="button" class="property-prev absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/60 p-2 text-2xl text-white hover:bg-black/80" data-id="' + property.id + '" aria-label="Previous image">‹</button>' +
-                '<button type="button" class="property-next absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/60 p-2 text-2xl text-white hover:bg-black/80" data-id="' + property.id + '" aria-label="Next image">›</button>' +
-                '<div class="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-sm text-white property-counter" data-id="' + property.id + '">1/' + imageCount + '</div>' : '';
+            const links = Array.isArray(property.images) && property.images.length ? property.images : (property.image ? [property.image] : []);
+            const linksMarkup = links.length ? '<div class="mt-3 space-y-2">' +
+                links.map(function (link, index) {
+                    return '<a href="' + link + '" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-200 transition"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 100 2h3.586L9.293 9.293a1 1 0 001.414 1.414L16 6.414V10a1 1 0 102 0V4a1 1 0 00-1-1h-6z"></path><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path></svg>View Photo ' + (links.length > 1 ? '(' + (index + 1) + ')' : '') + '</a>';
+                }).join('') +
+                '</div>' : '<div class="mt-3 text-sm text-gray-500">No photos linked yet</div>';
 
             return '<article class="overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 shadow-sm">' +
-                '<div class="property-gallery relative p-3" data-property-id="' + property.id + '">' +
-                '<div class="relative overflow-hidden rounded-2xl border border-gray-200 bg-white">' +
-                '<img src="' + mainImage + '" alt="' + property.title + '" class="property-main-image h-72 w-full object-cover md:h-96" data-property-id="' + property.id + '" data-index="0">' +
-                navMarkup +
-                '</div>' +
-                '</div>' +
-                '<div class="p-5">' +
+                '<div class="bg-gradient-to-r from-brand-green/10 to-yellow-100 rounded-t-2xl p-6">' +
                 '<h3 class="text-xl font-bold text-brand-green">' + property.title + '</h3>' +
                 '<p class="mt-1 text-sm font-semibold text-gray-500">' + property.location + '</p>' +
-                '<p class="mt-3 text-sm text-gray-700 leading-relaxed">' + property.details + '</p>' +
+                '</div>' +
+                '<div class="p-5">' +
+                '<p class="text-sm text-gray-700 leading-relaxed">' + property.details + '</p>' +
+                linksMarkup +
                 (isLoggedIn() && canManage ? '<div class="mt-4 flex flex-wrap gap-2">' +
-                '<button type="button" class="edit-property rounded-lg bg-yellow-400 px-3 py-2 text-sm font-semibold text-green-900" data-id="' + property.id + '">Edit</button>' +
-                '<button type="button" class="delete-property rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white" data-id="' + property.id + '">Delete</button>' +
+                '<button type="button" class="edit-property rounded-lg bg-yellow-400 px-3 py-2 text-sm font-semibold text-green-900 hover:bg-yellow-500 transition" data-id="' + property.id + '">Edit</button>' +
+                '<button type="button" class="delete-property rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700 transition" data-id="' + property.id + '">Delete</button>' +
                 '</div>' : '') +
                 '</div>' +
                 '</article>';
         }).join('');
     }
 
-    function readImageAsDataUrl(file, maxWidth, maxHeight, quality) {
-        return new Promise(function (resolve) {
-            if (!file) {
-                resolve('');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function () {
-                const source = reader.result;
-                if (!source || !file.type || !file.type.startsWith('image/')) {
-                    resolve(source || '');
-                    return;
-                }
-
-                const image = new Image();
-                image.onload = function () {
-                    const targetWidth = maxWidth || 1200;
-                    const targetHeight = maxHeight || 1200;
-                    const canvas = document.createElement('canvas');
-                    let width = image.width;
-                    let height = image.height;
-
-                    if (width > height) {
-                        if (width > targetWidth) {
-                            height = Math.round(height * (targetWidth / width));
-                            width = targetWidth;
-                        }
-                    } else if (height > targetHeight) {
-                        width = Math.round(width * (targetHeight / height));
-                        height = targetHeight;
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const context = canvas.getContext('2d');
-                    context.drawImage(image, 0, 0, width, height);
-                    const mimeType = file.type.includes('png') ? 'image/png' : 'image/jpeg';
-                    resolve(canvas.toDataURL(mimeType, quality || 0.75));
-                };
-                image.onerror = function () {
-                    resolve(source || '');
-                };
-                image.src = source;
-            };
-            reader.onerror = function () {
-                resolve('');
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
-    async function uploadPropertyImages(propertyId, files) {
-        if (!Array.isArray(files) || !files.length) {
+    function parseImageLinks(text) {
+        if (!text || typeof text !== 'string') {
             return [];
         }
-
-        const uploadResults = await Promise.all(files.map(function (file) {
-            if (!file || !file.type || !file.type.startsWith('image/')) {
-                return Promise.resolve('');
-            }
-
-            return readImageAsDataUrl(file, 1200, 1200, 0.8)
-                .catch(function (error) {
-                    console.error('Image conversion failed:', error);
-                    return '';
-                });
-        }));
-
-        return uploadResults.filter(function (item) {
-            return Boolean(item);
-        });
+        return text.split('\n')
+            .map(function (url) {
+                return url.trim();
+            })
+            .filter(function (url) {
+                return url.length > 0 && (url.startsWith('http://') || url.startsWith('https://'));
+            });
     }
 
     async function showPropertyImage(propertyId, direction) {
@@ -554,28 +491,27 @@ if (mobileButton && mobileMenu) {
 
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('property-form');
-        const imageInput = document.getElementById('property-image');
+        const imageLinksInput = document.getElementById('property-image-links');
         const preview = document.getElementById('property-image-preview');
         const cancelButton = document.getElementById('cancel-edit-button');
         const list = document.getElementById('property-list');
 
-        if (imageInput && preview) {
-            imageInput.addEventListener('change', async function () {
-                const files = Array.from(imageInput.files || []);
+        if (imageLinksInput && preview) {
+            imageLinksInput.addEventListener('change', function () {
+                const links = parseImageLinks(imageLinksInput.value);
                 preview.innerHTML = '';
 
-                if (!files.length) {
+                if (!links.length) {
                     preview.classList.add('hidden');
                     return;
                 }
 
-                const imageResults = await Promise.all(files.map(function (file) {
-                    return readImageAsDataUrl(file, 700, 700, 0.7);
-                }));
-
-                preview.innerHTML = imageResults.map(function (image) {
-                    return '<img src="' + image + '" class="h-32 w-full rounded-xl object-cover border border-gray-200">';
-                }).join('');
+                preview.innerHTML = '<div class="space-y-2">' + links.map(function (link, index) {
+                    return '<div class="flex items-center gap-2 rounded-lg bg-blue-50 p-3 border border-blue-200">' +
+                        '<svg class="h-4 w-4 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 100 2h3.586L9.293 9.293a1 1 0 001.414 1.414L16 6.414V10a1 1 0 102 0V4a1 1 0 00-1-1h-6z"></path><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path></svg>' +
+                        '<a href="' + link + '" target="_blank" rel="noopener noreferrer" class="text-sm text-blue-600 hover:text-blue-800 underline break-all">Photo ' + (index + 1) + '</a>' +
+                    '</div>';
+                }).join('') + '</div>';
                 preview.classList.remove('hidden');
             });
         }
@@ -623,11 +559,16 @@ if (mobileButton && mobileMenu) {
                         editingPropertyId = property.id;
 
                         const existingImages = Array.isArray(property.images) && property.images.length ? property.images : (property.image ? [property.image] : []);
+                        document.getElementById('property-image-links').value = existingImages.join('\n');
+                        
                         const preview = document.getElementById('property-image-preview');
                         if (existingImages.length) {
-                            preview.innerHTML = existingImages.map(function (image) {
-                                return '<img src="' + image + '" class="h-32 w-full rounded-xl object-cover border border-gray-200">';
-                            }).join('');
+                            preview.innerHTML = '<div class="space-y-2">' + existingImages.map(function (link, index) {
+                                return '<div class="flex items-center gap-2 rounded-lg bg-blue-50 p-3 border border-blue-200">' +
+                                    '<svg class="h-4 w-4 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M11 3a1 1 0 100 2h3.586L9.293 9.293a1 1 0 001.414 1.414L16 6.414V10a1 1 0 102 0V4a1 1 0 00-1-1h-6z"></path><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path></svg>' +
+                                    '<a href="' + link + '" target="_blank" rel="noopener noreferrer" class="text-sm text-blue-600 hover:text-blue-800 underline break-all">Photo ' + (index + 1) + '</a>' +
+                                '</div>';
+                            }).join('') + '</div>';
                             preview.classList.remove('hidden');
                         } else {
                             preview.innerHTML = '';
@@ -647,22 +588,6 @@ if (mobileButton && mobileMenu) {
                 }
             });
 
-            list.addEventListener('touchstart', function (event) {
-                const gallery = event.target.closest('.property-gallery');
-                if (!gallery) return;
-                touchStartX = event.touches[0].clientX;
-            }, { passive: true });
-
-            list.addEventListener('touchend', async function (event) {
-                const gallery = event.target.closest('.property-gallery');
-                if (!gallery) return;
-                const touchEndX = event.changedTouches[0].clientX;
-                const deltaX = touchEndX - touchStartX;
-                if (Math.abs(deltaX) > 50) {
-                    await showPropertyImage(gallery.getAttribute('data-property-id'), deltaX < 0 ? 'next' : 'prev');
-                }
-            }, { passive: true });
-        }
 
         if (form) {
             form.addEventListener('submit', async function (event) {
@@ -671,7 +596,8 @@ if (mobileButton && mobileMenu) {
                 const title = document.getElementById('property-title').value.trim();
                 const location = document.getElementById('property-location').value.trim();
                 const details = document.getElementById('property-details').value.trim();
-                const imageFiles = Array.from(imageInput ? imageInput.files || [] : []);
+                const imageLinksText = document.getElementById('property-image-links').value;
+                const imageLinks = parseImageLinks(imageLinksText);
 
                 if (!title || !location || !details) {
                     return;
@@ -679,7 +605,6 @@ if (mobileButton && mobileMenu) {
 
                 const properties = getProperties();
                 const propertyId = editingPropertyId || Date.now().toString();
-                const uploadedImages = imageFiles.length ? await uploadPropertyImages(propertyId, imageFiles) : [];
 
                 try {
                     if (editingPropertyId) {
@@ -691,7 +616,7 @@ if (mobileButton && mobileMenu) {
                                     title: title,
                                     location: location,
                                     details: details,
-                                    images: uploadedImages.length ? uploadedImages : existingImages
+                                    images: imageLinks.length ? imageLinks : existingImages
                                 };
                             }
                             return property;
@@ -703,7 +628,7 @@ if (mobileButton && mobileMenu) {
                             title: title,
                             location: location,
                             details: details,
-                            images: uploadedImages,
+                            images: imageLinks,
                             createdAt: firestoreEnabled && window.rbsrFirebase && window.rbsrFirebase.firestore
                                 ? window.rbsrFirebase.firestore.serverTimestamp()
                                 : Date.now()
