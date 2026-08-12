@@ -91,44 +91,49 @@
 
     function initializeFirebase() {
         if (firestoreDb) {
+            console.log('✓ Firebase already initialized, db available');
             return Promise.resolve(firestoreDb);
         }
 
         if (firebaseReady && window.rbsrFirebase && window.rbsrFirebase.db) {
             firestoreDb = window.rbsrFirebase.db;
+            console.log('✓ Firebase ready from module script, using db');
             return Promise.resolve(firestoreDb);
         }
 
         return new Promise(function (resolve) {
             if (firebaseReady) {
+                console.log('⚠️ Firebase initialization already completed (timeout)');
                 resolve(firestoreDb);
                 return;
             }
 
-            pendingInitializers.push(resolve);
+            console.log('🔄 Waiting for Firebase module script to initialize...');
+            let attempts = 0;
+            const maxAttempts = 50; // 5 seconds with 100ms checks
 
-            // Check every 100ms if Firebase is ready
             const checkInterval = setInterval(function () {
+                attempts++;
                 if (window.rbsrFirebase && window.rbsrFirebase.db) {
                     clearInterval(checkInterval);
                     firestoreDb = window.rbsrFirebase.db;
                     firebaseReady = true;
-                    pendingInitializers.forEach(function (callback) {
-                        callback(firestoreDb);
-                    });
-                    pendingInitializers = [];
+                    console.log('✓ Firebase initialized after', attempts * 100, 'ms');
+                    console.log('  - db object available:', Boolean(firestoreDb));
+                    console.log('  - firestore methods available:', Boolean(window.rbsrFirebase.firestore));
+                    resolve(firestoreDb);
+                    return;
+                }
+
+                if (attempts >= maxAttempts) {
+                    clearInterval(checkInterval);
+                    firebaseReady = true;
+                    console.warn('❌ Firebase SDK initialization timed out after 5 seconds');
+                    console.warn('  - window.rbsrFirebase:', window.rbsrFirebase);
+                    console.warn('  - Using localStorage fallback only');
+                    resolve(null);
                 }
             }, 100);
-
-            // Timeout after 5 seconds
-            setTimeout(function () {
-                clearInterval(checkInterval);
-                firebaseReady = true;
-                pendingInitializers.forEach(function (callback) {
-                    callback(null);
-                });
-                pendingInitializers = [];
-            }, 5000);
         });
     }
 
@@ -143,15 +148,20 @@
     }
 
     async function loadUsersFromFirebase() {
+        console.log('📤 loadUsersFromFirebase called');
         const db = await initializeFirebase();
         if (!db) {
+            console.log('  - db unavailable, using localStorage');
             return getUsersFromLocalStorage();
         }
 
         try {
+            console.log('  - Querying Firestore users collection...');
             const firestoreApi = window.rbsrFirebase.firestore;
             const usersRef = firestoreApi.collection(db, 'users');
             const snapshot = await firestoreApi.getDocs(usersRef);
+            
+            console.log('  - Firestore returned', snapshot.docs.length, 'documents');
             
             const users = snapshot.docs.map(function (docSnap) {
                 const data = docSnap.data() || {};
@@ -162,17 +172,29 @@
                     password: data.password || ''
                 };
             });
+            
+            console.log('  - Mapped to', users.length, 'user objects');
             localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            console.log('✓ Users loaded from Firestore and cached in localStorage');
             return users;
         } catch (error) {
-            console.error('Failed to load users from Firestore:', error);
+            console.error('❌ Failed to load users from Firestore:', error);
+            console.error('  - Error code:', error.code);
+            console.error('  - Error message:', error.message);
+            console.log('  - Falling back to localStorage');
             return getUsersFromLocalStorage();
         }
     }
 
     async function saveUserToFirebase(userData) {
+        console.log('📥 saveUserToFirebase called with:', userData.username);
+        
         const db = await initializeFirebase();
+        console.log('  - db available:', Boolean(db));
+        console.log('  - window.rbsrFirebase:', Boolean(window.rbsrFirebase));
+        
         if (!db) {
+            console.warn('⚠️ Firestore unavailable - saving user to localStorage only');
             const users = getUsersFromLocalStorage();
             const index = users.findIndex(function (item) {
                 return item.username === userData.username;
@@ -183,11 +205,17 @@
                 users.push(userData);
             }
             localStorage.setItem(USERS_KEY, JSON.stringify(users));
+            console.log('✓ User saved to localStorage (Firestore unavailable)');
             return true;
         }
 
         try {
+            console.log('🔍 Getting Firestore API methods...');
             const firestoreApi = window.rbsrFirebase.firestore;
+            console.log('  - setDoc available:', Boolean(firestoreApi.setDoc));
+            console.log('  - doc available:', Boolean(firestoreApi.doc));
+            console.log('  - serverTimestamp available:', Boolean(firestoreApi.serverTimestamp));
+            
             const payload = {
                 role: userData.role || 'custom',
                 permissions: Array.isArray(userData.permissions) ? userData.permissions : [],
@@ -199,11 +227,35 @@
                 payload.createdAt = firestoreApi.serverTimestamp();
             }
 
-            await firestoreApi.setDoc(firestoreApi.doc(db, 'users', userData.username), payload);
-            localStorage.setItem(USERS_KEY, JSON.stringify(await loadUsersFromFirebase()));
+            console.log('📝 Saving user to Firestore:', userData.username);
+            console.log('  - Payload:', payload);
+            console.log('  - Collection: users');
+            console.log('  - Document ID:', userData.username);
+            
+            const docRef = firestoreApi.doc(db, 'users', userData.username);
+            console.log('  - Doc reference created:', Boolean(docRef));
+            
+            await firestoreApi.setDoc(docRef, payload);
+            
+            console.log('✅ User saved successfully to Firestore:', userData.username);
+            console.log('  - Refreshing localStorage from Firestore...');
+            
+            const updatedUsers = await loadUsersFromFirebase();
+            console.log('  - Users reloaded from Firestore:', updatedUsers.length, 'users');
+            
             return true;
         } catch (error) {
-            console.error('Failed to save user to Firestore:', error);
+            console.error('❌ Failed to save user to Firestore:', userData.username);
+            console.error('  - Error code:', error.code);
+            console.error('  - Error message:', error.message);
+            console.error('  - Full error:', error);
+            
+            if (error.code === 'permission-denied') {
+                console.error('  ⚠️ PERMISSION DENIED - Check Firestore security rules!');
+                console.error('  - Go to Firebase Console → Firestore → Rules');
+                console.error('  - Make sure rules allow writing to "users" collection');
+            }
+            
             return false;
         }
     }
@@ -230,25 +282,111 @@
         }
     }
 
+    const ADMIN_USERNAME = 'administrator';
+    const ADMIN_DEFAULT_PASSWORD = 'Password123!@#';
+
+    function getAdminUserRecord() {
+        return {
+            username: ADMIN_USERNAME,
+            role: 'admin',
+            permissions: ['admin', 'careers', 'properties']
+        };
+    }
+
     async function authenticateUser(username, password) {
-        const adminUsername = 'administrator';
-        const adminPassword = 'Password123!@#';
-
-        if (username === adminUsername && password === adminPassword) {
-            return {
-                username: adminUsername,
-                role: 'admin',
-                permissions: ['admin', 'careers', 'properties']
-            };
-        }
-
         const users = await loadUsersFromFirebase();
         const normalizedUsername = String(username || '').trim();
         const normalizedPassword = String(password || '');
 
+        if (normalizedUsername === ADMIN_USERNAME) {
+            const adminInFirestore = users.find(function (item) {
+                return String(item.username || '').trim() === ADMIN_USERNAME;
+            });
+
+            if (adminInFirestore) {
+                if (String(adminInFirestore.password || '') === normalizedPassword) {
+                    return getAdminUserRecord();
+                }
+                return null;
+            }
+
+            if (normalizedPassword === ADMIN_DEFAULT_PASSWORD) {
+                return getAdminUserRecord();
+            }
+            return null;
+        }
+
         return users.find(function (item) {
             return String(item.username || '').trim() === normalizedUsername && String(item.password || '') === normalizedPassword;
         }) || null;
+    }
+
+    async function changePassword(currentPassword, newPassword) {
+        if (!isLoggedIn()) {
+            return { success: false, message: 'You must be signed in to change your password.' };
+        }
+
+        const currentUser = getCurrentUser();
+        const username = String(currentUser.username || '').trim();
+        const current = String(currentPassword || '');
+        const next = String(newPassword || '');
+
+        if (!username) {
+            return { success: false, message: 'Unable to identify the current user.' };
+        }
+
+        if (!current) {
+            return { success: false, message: 'Enter your current password.' };
+        }
+
+        if (!next) {
+            return { success: false, message: 'Enter a new password.' };
+        }
+
+        if (next.length < 8) {
+            return { success: false, message: 'New password must be at least 8 characters.' };
+        }
+
+        if (current === next) {
+            return { success: false, message: 'New password must be different from your current password.' };
+        }
+
+        const users = await loadUsersFromFirebase();
+        const existingUser = users.find(function (item) {
+            return String(item.username || '').trim() === username;
+        });
+
+        let validCurrent = false;
+        if (existingUser) {
+            validCurrent = String(existingUser.password || '') === current;
+        } else if (username === ADMIN_USERNAME) {
+            validCurrent = current === ADMIN_DEFAULT_PASSWORD;
+        }
+
+        if (!validCurrent) {
+            return { success: false, message: 'Current password is incorrect.' };
+        }
+
+        const userPayload = existingUser
+            ? {
+                username: existingUser.username,
+                role: existingUser.role || currentUser.role || 'custom',
+                permissions: Array.isArray(existingUser.permissions) ? existingUser.permissions : (currentUser.permissions || []),
+                password: next
+            }
+            : {
+                username: username,
+                role: currentUser.role || 'custom',
+                permissions: Array.isArray(currentUser.permissions) ? currentUser.permissions : [],
+                password: next
+            };
+
+        const saved = await saveUserToFirebase(userPayload);
+        if (!saved) {
+            return { success: false, message: 'Could not save your new password. Please try again.' };
+        }
+
+        return { success: true, message: 'Password updated successfully.' };
     }
 
     function getCurrentUser() {
@@ -276,6 +414,30 @@
         window.location.href = 'index.html';
     }
 
+    function updateChangePasswordLinks() {
+        document.querySelectorAll('[data-change-password-link]').forEach(function (link) {
+            link.remove();
+        });
+
+        if (!isLoggedIn()) {
+            return;
+        }
+
+        document.querySelectorAll('[data-auth-link]').forEach(function (link) {
+            const parent = link.parentElement;
+            if (!parent || parent.querySelector('[data-change-password-link]')) {
+                return;
+            }
+
+            const changePasswordLink = document.createElement('a');
+            changePasswordLink.href = 'change-password.html';
+            changePasswordLink.textContent = 'Change Password';
+            changePasswordLink.setAttribute('data-change-password-link', '');
+            changePasswordLink.className = link.className;
+            parent.insertBefore(changePasswordLink, link);
+        });
+    }
+
     function updateAuthLinks() {
         const links = document.querySelectorAll('[data-auth-link]');
         const currentUser = getCurrentUser();
@@ -291,6 +453,8 @@
                 link.setAttribute('data-auth-action', 'login');
             }
         });
+
+        updateChangePasswordLinks();
 
         const status = document.getElementById('auth-status');
         if (status) {
@@ -325,6 +489,7 @@
         loadUsers: loadUsersFromFirebase,
         saveUser: saveUserToFirebase,
         deleteUser: deleteUserFromFirebase,
-        authenticateUser: authenticateUser
+        authenticateUser: authenticateUser,
+        changePassword: changePassword
     };
 })();

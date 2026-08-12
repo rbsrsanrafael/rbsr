@@ -173,26 +173,6 @@
     <p class="opacity-75">© 2026 Rural Bank of San Rafael. All Rights Reserved.</p>
 </footer>
 
-<script src="auth.js"></script>
-<script>
-const mobileButton = document.getElementById('mobile-menu-button');
-const mobileMenu = document.getElementById('mobile-menu');
-if (mobileButton && mobileMenu) {
-    mobileButton.addEventListener('click', function () {
-        mobileMenu.classList.toggle('hidden');
-    });
-    mobileMenu.querySelectorAll('a').forEach(function (link) {
-        link.addEventListener('click', function () {
-            mobileMenu.classList.add('hidden');
-        });
-    });
-    window.addEventListener('resize', function () {
-        if (window.innerWidth >= 768) {
-            mobileMenu.classList.add('hidden');
-        }
-    });
-}
-</script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -219,6 +199,26 @@ if (mobileButton && mobileMenu) {
             serverTimestamp
         }
     };
+</script>
+<script src="auth.js"></script>
+<script>
+const mobileButton = document.getElementById('mobile-menu-button');
+const mobileMenu = document.getElementById('mobile-menu');
+if (mobileButton && mobileMenu) {
+    mobileButton.addEventListener('click', function () {
+        mobileMenu.classList.toggle('hidden');
+    });
+    mobileMenu.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            mobileMenu.classList.add('hidden');
+        });
+    });
+    window.addEventListener('resize', function () {
+        if (window.innerWidth >= 768) {
+            mobileMenu.classList.add('hidden');
+        }
+    });
+}
 </script>
 <script>
     const PROPERTY_STORAGE_KEY = 'rbsrProperties';
@@ -351,15 +351,35 @@ if (mobileButton && mobileMenu) {
 
     async function initializePropertyStore() {
         if (propertiesLoaded) {
+            console.log('✓ Properties already loaded from cache');
             return getProperties();
         }
 
+        console.log('🔄 Initializing properties store...');
         if (initializeFirebase()) {
+            console.log('✓ Firebase connected, subscribing to properties...');
             subscribeToProperties();
-            return getProperties();
+            await new Promise(function(resolve) { setTimeout(resolve, 500); });
+        } else {
+            console.log('⚠ Firebase not available, using localStorage');
         }
 
-        throw new Error('Firebase is unavailable.');
+        const legacyProperties = getLegacyProperties();
+        if (legacyProperties.length && firestoreEnabled) {
+            console.log('📤 Migrating legacy properties to Firestore...');
+            try {
+                await saveProperties(legacyProperties);
+            } catch (error) {
+                console.warn('Could not migrate to Firestore:', error);
+                loadPropertiesFromLocalStorage();
+            }
+        } else if (!firestoreEnabled) {
+            loadPropertiesFromLocalStorage();
+        }
+
+        propertiesLoaded = true;
+        console.log('✓ Properties initialized:', getProperties().length, 'items');
+        return getProperties();
     }
 
     function resetForm() {
@@ -395,16 +415,29 @@ if (mobileButton && mobileMenu) {
 
         if (!list || !form || !status) return;
 
-        await initializePropertyStore();
+        try {
+            await initializePropertyStore();
+        } catch (error) {
+            console.error('❌ Failed to initialize properties:', error);
+            loadPropertiesFromLocalStorage();
+            propertiesLoaded = true;
+        }
+        
         const properties = getProperties();
+        const loggedIn = isLoggedIn();
         const canManage = window.rbsrAuth && window.rbsrAuth.hasPermission && window.rbsrAuth.hasPermission('properties');
+        
+        console.log('📊 Render properties - Logged in:', loggedIn, 'Can manage:', canManage, 'Properties:', properties.length);
+        console.log('👤 Current user:', window.rbsrAuth ? (window.rbsrAuth.getCurrentUser ? window.rbsrAuth.getCurrentUser() : 'rbsrAuth exists') : 'No rbsrAuth');
 
-        if (isLoggedIn() && canManage) {
+        if (loggedIn && canManage) {
+            console.log('✓ Showing form - user has permission');
             form.classList.remove('hidden');
-            status.innerHTML = '<span class="font-semibold text-brand-green">Editing enabled · ' + (firestoreEnabled ? 'shared with other users' : 'saved in this browser') + '</span>';
+            status.innerHTML = '<span class="font-semibold text-brand-green">Editing enabled · ' + (firestoreEnabled ? 'shared with other users' : 'saved locally') + '</span>';
         } else {
+            console.log('✗ Hiding form - Logged in:', loggedIn, 'Can manage:', canManage);
             form.classList.add('hidden');
-            status.textContent = isLoggedIn() ? 'You do not have access to manage properties.' : '';
+            status.textContent = loggedIn ? 'You do not have access to manage properties.' : '';
         }
 
         if (!properties.length) {
@@ -578,7 +611,7 @@ if (mobileButton && mobileMenu) {
                     await renderProperties();
                 }
             });
-
+        }
 
         if (form) {
             form.addEventListener('submit', async function (event) {
@@ -636,10 +669,16 @@ if (mobileButton && mobileMenu) {
             });
         }
 
-        window.addEventListener('load', function () {
-            initializePropertyStore().then(function () {
-                renderProperties();
-            });
+        console.log('🚀 Properties page loaded');
+        console.log('✓ Firebase available:', Boolean(window.rbsrFirebase));
+        console.log('✓ Auth available:', Boolean(window.rbsrAuth));
+
+        initializePropertyStore().then(function () {
+            console.log('✓ Property store initialized');
+            renderProperties();
+        }).catch(function(error) {
+            console.error('Error during initialization:', error);
+            renderProperties();
         });
     });
 </script>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+hunt<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,24 +16,16 @@
 <body class="bg-gray-50 text-gray-900">
 
 <header class="bg-brand-green shadow-lg">
-    <div class="container mx-auto px-4 py-4 flex items-center justify-between relative">
-        <a href="index.html" class="flex items-center text-sm sm:text-base md:text-lg font-bold text-brand-yellow">
-            <img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-9 w-9 sm:h-10 sm:w-10 mr-2 rounded-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="index.html" class="flex items-center text-brand-yellow font-bold">
+            <img src="277570418_377604507712528_8014509792721781536_n.jpg" class="h-10 w-10 mr-2 rounded-md">
             <span>Rural Bank of San Rafael</span>
         </a>
-        <nav class="hidden md:flex items-center space-x-4 text-white">
+        <nav class="flex items-center space-x-4 text-white">
             <a href="careers.html" class="hover:text-brand-yellow">Careers</a>
             <a href="real-and-other-properties-acquired.html" class="hover:text-brand-yellow">Properties</a>
             <a href="#" class="hover:text-brand-yellow" data-auth-link>Logout</a>
         </nav>
-        <button id="mobile-menu-button" type="button" class="md:hidden rounded-lg border border-white/30 p-2 text-white focus:outline-none" aria-label="Toggle menu">
-            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-        </button>
-    </div>
-    <div id="mobile-menu" class="hidden md:hidden absolute left-0 right-0 top-full bg-brand-green border-t border-white/20 px-4 py-4 space-y-2 shadow-lg">
-        <a href="careers.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Careers</a>
-        <a href="real-and-other-properties-acquired.html" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10">Properties</a>
-        <a href="#" class="block rounded-lg px-3 py-2 text-white hover:bg-white/10" data-auth-link>Logout</a>
     </div>
 </header>
 
@@ -86,13 +78,72 @@
     </section>
 </main>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getFirestore, collection, getDocs, onSnapshot, deleteDoc, doc, setDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    window.rbsrFirebase = {
+        app,
+        analytics,
+        db,
+        firebaseConfig,
+        firestore: {
+            collection,
+            getDocs,
+            onSnapshot,
+            deleteDoc,
+            doc,
+            setDoc,
+            writeBatch,
+            serverTimestamp
+        }
+    };
+</script>
 <script src="auth.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getFirestore, collection, getDocs, onSnapshot, deleteDoc, doc, setDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    window.rbsrFirebase = {
+        app,
+        analytics,
+        db,
+        firebaseConfig,
+        firestore: {
+            collection,
+            getDocs,
+            onSnapshot,
+            deleteDoc,
+            doc,
+            setDoc,
+            writeBatch,
+            serverTimestamp
+        }
+    };
+</script>
 <script>
     let editingUsername = null;
+    let usersCache = [];
+    let usersLoaded = false;
+    let unsubscribeFromUsers = null;
 
     function getUsers() {
+        return usersCache;
+    }
+
+    function getLegacyUsers() {
         try {
             const saved = localStorage.getItem('rbsrUsers');
             return saved ? JSON.parse(saved) : [];
@@ -102,7 +153,79 @@
     }
 
     function saveUsers(users) {
+        usersCache = users;
         localStorage.setItem('rbsrUsers', JSON.stringify(users));
+    }
+
+    function subscribeToUsers() {
+        const db = window.rbsrFirebase?.db;
+        const firestoreApi = window.rbsrFirebase?.firestore;
+        
+        if (!db || !firestoreApi) {
+            console.warn('Firebase not available for user subscription');
+            return;
+        }
+
+        try {
+            const usersRef = firestoreApi.collection(db, 'users');
+            unsubscribeFromUsers = firestoreApi.onSnapshot(usersRef, function (snapshot) {
+                usersCache = snapshot.docs.map(function (docSnap) {
+                    const data = docSnap.data() || {};
+                    return {
+                        username: docSnap.id,
+                        role: data.role || 'custom',
+                        permissions: Array.isArray(data.permissions) ? data.permissions : [],
+                        password: data.password || ''
+                    };
+                });
+                usersLoaded = true;
+                renderUsers();
+            }, function (error) {
+                console.warn('Firestore subscription error:', error);
+                usersCache = getLegacyUsers();
+                usersLoaded = true;
+                renderUsers();
+            });
+        } catch (error) {
+            console.error('Failed to subscribe to users:', error);
+            usersCache = getLegacyUsers();
+            usersLoaded = true;
+            renderUsers();
+        }
+    }
+
+    async function loadUsersFromFirestore() {
+        const db = window.rbsrFirebase?.db;
+        const firestoreApi = window.rbsrFirebase?.firestore;
+        
+        if (!db || !firestoreApi) {
+            console.warn('Firebase not available, loading from localStorage');
+            usersCache = getLegacyUsers();
+            usersLoaded = true;
+            return;
+        }
+
+        try {
+            const usersRef = firestoreApi.collection(db, 'users');
+            const snapshot = await firestoreApi.getDocs(usersRef);
+            
+            usersCache = snapshot.docs.map(function (docSnap) {
+                const data = docSnap.data() || {};
+                return {
+                    username: docSnap.id,
+                    role: data.role || 'custom',
+                    permissions: Array.isArray(data.permissions) ? data.permissions : [],
+                    password: data.password || ''
+                };
+            });
+            
+            console.log('✓ Loaded', usersCache.length, 'users from Firestore');
+            usersLoaded = true;
+        } catch (error) {
+            console.error('Failed to load users from Firestore:', error);
+            usersCache = getLegacyUsers();
+            usersLoaded = true;
+        }
     }
 
     function getSelectedPermissions() {
@@ -122,6 +245,9 @@
         const list = document.getElementById('user-list');
         const users = getUsers();
         const currentUser = window.rbsrAuth.getCurrentUser();
+        
+        console.log('📝 Rendering', users.length, 'users');
+        console.log('📋 User list:', users);
 
         if (!list) return;
 
@@ -168,6 +294,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', async function () {
+        console.log('🚀 Admin page loaded');
+        console.log('✓ Firebase available:', Boolean(window.rbsrFirebase));
+        console.log('✓ Auth available:', Boolean(window.rbsrAuth));
+        
         const form = document.getElementById('user-form');
         const list = document.getElementById('user-list');
         const cancelButton = document.getElementById('cancel-edit-user');
@@ -182,7 +312,13 @@
             status.textContent = 'Signed in as ' + window.rbsrAuth.getCurrentUser().username;
         }
 
-        await window.rbsrAuth.loadUsers();
+        // Load users from Firestore with real-time sync
+        console.log('🔄 Initializing users from Firestore...');
+        await loadUsersFromFirestore();
+        
+        // Subscribe to real-time updates
+        subscribeToUsers();
+        
         renderUsers();
 
         if (cancelButton) {
@@ -243,7 +379,11 @@
                 const role = document.getElementById('user-role').value;
                 const permissions = getSelectedPermissions();
 
+                console.log('📝 Form submitted for user:', username);
+                console.log('⚙️  Role:', role, 'Permissions:', permissions);
+
                 if (!username) {
+                    console.warn('⚠️ No username provided');
                     return;
                 }
 
@@ -279,37 +419,19 @@
                     users.push(userPayload);
                 }
 
+                console.log('💾 Saving to localStorage:', userPayload);
                 saveUsers(users);
-                const saved = await window.rbsrAuth.saveUser(userPayload);
-                if (!saved) {
-                    alert('The account could not be saved to Firebase. Please check the Firestore rules or connection.');
-                    return;
-                }
-                await window.rbsrAuth.loadUsers();
+                console.log('✓ Saved to localStorage');
+                
+                console.log('🔄 Saving to Firestore...');
+                await window.rbsrAuth.saveUser(userPayload);
+                console.log('✓ Save complete, re-rendering users list');
+                
                 resetUserForm();
                 renderUsers();
             });
         }
     });
-</script>
-<script>
-const mobileButton = document.getElementById('mobile-menu-button');
-const mobileMenu = document.getElementById('mobile-menu');
-if (mobileButton && mobileMenu) {
-    mobileButton.addEventListener('click', function () {
-        mobileMenu.classList.toggle('hidden');
-    });
-    mobileMenu.querySelectorAll('a').forEach(function (link) {
-        link.addEventListener('click', function () {
-            mobileMenu.classList.add('hidden');
-        });
-    });
-    window.addEventListener('resize', function () {
-        if (window.innerWidth >= 768) {
-            mobileMenu.classList.add('hidden');
-        }
-    });
-}
 </script>
 </body>
 </html>

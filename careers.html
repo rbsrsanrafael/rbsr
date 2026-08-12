@@ -328,7 +328,6 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="auth.js"></script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -358,6 +357,7 @@
         }
     };
 </script>
+<script src="auth.js"></script>
 <script>
     const CAREER_STORAGE_KEY = 'rbsrCareers';
     let editingCareerId = null;
@@ -547,20 +547,34 @@
 
         async function initializeCareerStore() {
             if (careersLoaded) {
+                console.log('✓ Careers already loaded from cache');
                 return getCareers();
             }
 
+            console.log('🔄 Initializing careers store...');
             if (initializeFirebase()) {
+                console.log('✓ Firebase connected, subscribing to careers...');
                 subscribeToCareers();
+                await new Promise(function(resolve) { setTimeout(resolve, 500); });
+            } else {
+                console.log('⚠ Firebase not available, using localStorage');
             }
 
             const legacyCareers = getLegacyCareers();
-            if (legacyCareers.length) {
-                await saveCareers(legacyCareers);
-            } else {
+            if (legacyCareers.length && firestoreEnabled) {
+                console.log('📤 Migrating legacy careers to Firestore...');
+                try {
+                    await saveCareers(legacyCareers);
+                } catch (error) {
+                    console.warn('Could not migrate to Firestore:', error);
+                    loadCareersFromLocalStorage();
+                }
+            } else if (!firestoreEnabled) {
                 loadCareersFromLocalStorage();
             }
 
+            careersLoaded = true;
+            console.log('✓ Careers initialized:', getCareers().length, 'items');
             return getCareers();
         }
 
@@ -594,21 +608,34 @@
 
             if (!list || !form || !status) return;
 
-            await initializeCareerStore();
+            try {
+                await initializeCareerStore();
+            } catch (error) {
+                console.error('❌ Failed to initialize careers:', error);
+                loadCareersFromLocalStorage();
+                careersLoaded = true;
+            }
+            
             const careers = getCareers();
+            const loggedIn = isLoggedIn();
             const canManage = canManageCareers();
+            
+            console.log('📊 Render careers - Logged in:', loggedIn, 'Can manage:', canManage, 'Careers:', careers.length);
+            console.log('👤 Current user:', getStoredUserData());
 
-            if (isLoggedIn() && canManage) {
+            if (loggedIn && canManage) {
+                console.log('✓ Showing form - user has permission');
                 form.classList.remove('hidden');
                 const submitButton = form.querySelector('button[type="submit"]');
                 if (submitButton) {
                     submitButton.disabled = false;
                     submitButton.classList.remove('opacity-60', 'cursor-not-allowed');
                 }
-                status.innerHTML = '<span class="font-semibold text-brand-green">Editing enabled · shared with other users</span>';
+                status.innerHTML = '<span class="font-semibold text-brand-green">Editing enabled · ' + (firestoreEnabled ? 'shared with other users' : 'saved locally') + '</span>';
             } else {
+                console.log('✗ Hiding form - Logged in:', loggedIn, 'Can manage:', canManage);
                 form.classList.add('hidden');
-                status.textContent = isLoggedIn() ? 'You do not have access to manage careers.' : '';
+                status.textContent = loggedIn ? 'You do not have access to manage careers.' : '';
             }
 
             if (!careers.length) {
@@ -643,6 +670,10 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            console.log('🚀 Careers page loaded');
+            console.log('✓ Firebase available:', Boolean(window.rbsrFirebase));
+            console.log('✓ Auth available:', Boolean(window.rbsrAuth));
+            
             const form = document.getElementById('career-form');
             const list = document.getElementById('career-list');
             const cancelButton = document.getElementById('cancel-career-edit');
