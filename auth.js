@@ -3,16 +3,9 @@
     const USER_KEY = 'rbsrUser';
     const USER_DATA_KEY = 'rbsrUserData';
     const USERS_KEY = 'rbsrUsers';
-    const firebaseConfig = {
-        apiKey: "AIzaSyBd9_xtl2tH4HMeuXZdjdLzMoPndnKh2s0",
-        authDomain: "rbsrwebsite-2b69e.firebaseapp.com",
-        projectId: "rbsrwebsite-2b69e",
-        storageBucket: "rbsrwebsite-2b69e.firebasestorage.app",
-        messagingSenderId: "1046190251402",
-        appId: "1:1046190251402:web:32356862d562f9024e3c73",
-        measurementId: "G-81D76QZ61L"
-    };
     let firestoreDb = null;
+    let firebaseReady = false;
+    let pendingInitializers = [];
 
     function getSessionValue(key) {
         try {
@@ -98,30 +91,45 @@
 
     function initializeFirebase() {
         if (firestoreDb) {
-            return firestoreDb;
+            return Promise.resolve(firestoreDb);
         }
 
-        if (!window.firebase) {
-            return null;
+        if (firebaseReady && window.rbsrFirebase && window.rbsrFirebase.db) {
+            firestoreDb = window.rbsrFirebase.db;
+            return Promise.resolve(firestoreDb);
         }
 
-        try {
-            if (!window.firebase.apps || !window.firebase.apps.length) {
-                if (window.firebase.initializeApp) {
-                    window.firebase.initializeApp(firebaseConfig);
+        return new Promise(function (resolve) {
+            if (firebaseReady) {
+                resolve(firestoreDb);
+                return;
+            }
+
+            pendingInitializers.push(resolve);
+
+            // Check every 100ms if Firebase is ready
+            const checkInterval = setInterval(function () {
+                if (window.rbsrFirebase && window.rbsrFirebase.db) {
+                    clearInterval(checkInterval);
+                    firestoreDb = window.rbsrFirebase.db;
+                    firebaseReady = true;
+                    pendingInitializers.forEach(function (callback) {
+                        callback(firestoreDb);
+                    });
+                    pendingInitializers = [];
                 }
-            }
+            }, 100);
 
-            if (!window.firebase.firestore) {
-                return null;
-            }
-
-            firestoreDb = window.firebase.firestore();
-            return firestoreDb;
-        } catch (error) {
-            console.error('Firebase initialization failed:', error);
-            return null;
-        }
+            // Timeout after 5 seconds
+            setTimeout(function () {
+                clearInterval(checkInterval);
+                firebaseReady = true;
+                pendingInitializers.forEach(function (callback) {
+                    callback(null);
+                });
+                pendingInitializers = [];
+            }, 5000);
+        });
     }
 
     function getUsersFromLocalStorage() {
@@ -135,17 +143,20 @@
     }
 
     async function loadUsersFromFirebase() {
-        const db = initializeFirebase();
+        const db = await initializeFirebase();
         if (!db) {
             return getUsersFromLocalStorage();
         }
 
         try {
-            const snapshot = await db.collection('users').get();
-            const users = snapshot.docs.map(function (doc) {
-                const data = doc.data() || {};
+            const firestoreApi = window.rbsrFirebase.firestore;
+            const usersRef = firestoreApi.collection(db, 'users');
+            const snapshot = await firestoreApi.getDocs(usersRef);
+            
+            const users = snapshot.docs.map(function (docSnap) {
+                const data = docSnap.data() || {};
                 return {
-                    username: doc.id,
+                    username: docSnap.id,
                     role: data.role || 'custom',
                     permissions: Array.isArray(data.permissions) ? data.permissions : [],
                     password: data.password || ''
@@ -160,7 +171,7 @@
     }
 
     async function saveUserToFirebase(userData) {
-        const db = initializeFirebase();
+        const db = await initializeFirebase();
         if (!db) {
             const users = getUsersFromLocalStorage();
             const index = users.findIndex(function (item) {
@@ -176,27 +187,29 @@
         }
 
         try {
+            const firestoreApi = window.rbsrFirebase.firestore;
             const payload = {
                 role: userData.role || 'custom',
                 permissions: Array.isArray(userData.permissions) ? userData.permissions : [],
                 password: userData.password || '',
-                updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
+                updatedAt: firestoreApi.serverTimestamp()
             };
 
             if (!userData.createdAt) {
-                payload.createdAt = window.firebase.firestore.FieldValue.serverTimestamp();
+                payload.createdAt = firestoreApi.serverTimestamp();
             }
 
-            await db.collection('users').doc(userData.username).set(payload);
+            await firestoreApi.setDoc(firestoreApi.doc(db, 'users', userData.username), payload);
             localStorage.setItem(USERS_KEY, JSON.stringify(await loadUsersFromFirebase()));
             return true;
         } catch (error) {
+            console.error('Failed to save user to Firestore:', error);
             return false;
         }
     }
 
     async function deleteUserFromFirebase(username) {
-        const db = initializeFirebase();
+        const db = await initializeFirebase();
         if (!db) {
             const users = getUsersFromLocalStorage().filter(function (item) {
                 return item.username !== username;
@@ -206,11 +219,13 @@
         }
 
         try {
-            await db.collection('users').doc(username).delete();
+            const firestoreApi = window.rbsrFirebase.firestore;
+            await firestoreApi.deleteDoc(firestoreApi.doc(db, 'users', username));
             const users = await loadUsersFromFirebase();
             localStorage.setItem(USERS_KEY, JSON.stringify(users));
             return true;
         } catch (error) {
+            console.error('Failed to delete user from Firestore:', error);
             return false;
         }
     }

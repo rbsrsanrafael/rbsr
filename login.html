@@ -78,6 +78,33 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="auth.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getFirestore, collection, getDocs, onSnapshot, deleteDoc, doc, setDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    window.rbsrFirebase = {
+        app,
+        analytics,
+        db,
+        firebaseConfig,
+        firestore: {
+            collection,
+            getDocs,
+            onSnapshot,
+            deleteDoc,
+            doc,
+            setDoc,
+            writeBatch,
+            serverTimestamp
+        }
+    };
+</script>
 <script>
 const mobileButton = document.getElementById('mobile-menu-button');
 const mobileMenu = document.getElementById('mobile-menu');
